@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import NextLink from 'next/link'
-import { Flex, Grid, GridItem, Link } from '@chakra-ui/react'
+import { Flex, Grid, GridItem, Text } from '@chakra-ui/react'
 
 type LayoutProps = PropsWithChildren<{
   actions?: JSX.Element
@@ -38,7 +38,7 @@ function Header({ actions }: Pick<LayoutProps, 'actions'>) {
       justifyContent="space-between"
     >
       <NextLink href="/" passHref>
-        <Link
+        <Text
           mx={3}
           display="flex"
           alignItems="center"
@@ -46,7 +46,7 @@ function Header({ actions }: Pick<LayoutProps, 'actions'>) {
           color="white"
         >
           Books
-        </Link>
+        </Text>
       </NextLink>
       <Flex>{actions}</Flex>
     </Flex>
