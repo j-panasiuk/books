@@ -2,7 +2,7 @@ import type { InferGetServerSidePropsType } from 'next'
 import type { Book } from '@prisma/client'
 import { Button } from '@chakra-ui/react'
 import { Layout } from 'components/Layout'
-import { prisma } from '.'
+import { prisma } from 'prisma/client'
 
 export default function IndexPage({
   books,

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { PrismaClient, Book } from '@prisma/client'
-
-export const prisma = new PrismaClient()
+import type { Book } from '@prisma/client'
+import { prisma } from 'prisma/client'
 
 export function useBooks() {
   const [books, setBooks] = useState<Book[]>()
