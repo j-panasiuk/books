@@ -21,7 +21,10 @@ export default function IndexPage({
 }
 
 export async function getServerSideProps() {
-  const books = await prisma.book.findMany()
+  const books = await prisma.book.findMany({
+    orderBy: [{ updatedAt: 'desc' }, { title: 'asc' }],
+    take: 100,
+  })
 
   return {
     props: {
