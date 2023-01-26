@@ -1,12 +1,9 @@
 import type { PropsWithChildren } from 'react'
-import NextLink from 'next/link'
-import { Flex, Grid, GridItem, Text } from '@chakra-ui/react'
+import { Flex, Grid, GridItem } from '@chakra-ui/react'
 
-type LayoutProps = PropsWithChildren<{
-  actions?: JSX.Element
-}>
+export type LayoutProps = PropsWithChildren<HeaderProps>
 
-export function Layout({ children, actions }: LayoutProps) {
+export function Layout({ children, nav, actions }: LayoutProps) {
   return (
     <Grid
       w="100vw"
@@ -17,7 +14,7 @@ export function Layout({ children, actions }: LayoutProps) {
       overflowY="hidden"
     >
       <GridItem as="header">
-        <Header actions={actions} />
+        <Header nav={nav} actions={actions} />
       </GridItem>
       <GridItem as="main" overflowY="auto">
         {children}
@@ -26,7 +23,12 @@ export function Layout({ children, actions }: LayoutProps) {
   )
 }
 
-function Header({ actions }: Pick<LayoutProps, 'actions'>) {
+type HeaderProps = {
+  nav?: JSX.Element
+  actions?: JSX.Element
+}
+
+function Header({ nav, actions }: HeaderProps) {
   return (
     <Flex
       p="relative"
@@ -37,17 +39,7 @@ function Header({ actions }: Pick<LayoutProps, 'actions'>) {
       alignItems="center"
       justifyContent="space-between"
     >
-      <NextLink href="/" passHref>
-        <Text
-          mx={3}
-          display="flex"
-          alignItems="center"
-          fontWeight={800}
-          color="white"
-        >
-          Books
-        </Text>
-      </NextLink>
+      <Flex>{nav}</Flex>
       <Flex>{actions}</Flex>
     </Flex>
   )
