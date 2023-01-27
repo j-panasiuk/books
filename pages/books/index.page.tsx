@@ -1,15 +1,19 @@
 import type { InferGetServerSidePropsType } from 'next'
-import type { Book } from '@prisma/client'
 import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import { prisma } from 'prisma/client'
+import { serialize } from 'domain/entity'
 import { AppLayout } from 'pages'
+import { BooksFilters } from './filters'
+import { useBooks } from '.'
 
-export default function BooksPage({
-  books,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>
+
+export default function BooksPage({ books }: Props) {
+  const { matchingBooks, ...controls } = useBooks(books)
+
   return (
     <AppLayout actions={<Button size="sm">+ Add book</Button>}>
-      {/* <Filters /> */}
+      <BooksFilters {...controls} />
       {/* <Sorting /> */}
       <Table size="sm">
         <Thead>
@@ -19,13 +23,13 @@ export default function BooksPage({
           </Tr>
         </Thead>
         <Tbody>
-          {books.map((book) => (
+          {matchingBooks.map((book) => (
             <Tr key={book.id}>
               <Td>{book.author}</Td>
               <Td fontStyle="italic">{book.title}</Td>
             </Tr>
           ))}
-          {books.length === 0 ? 'No books found' : null}
+          {matchingBooks.length === 0 ? 'No books found' : null}
         </Tbody>
       </Table>
     </AppLayout>
@@ -40,24 +44,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      books: books.map(serializeBook),
+      books: books.map(serialize),
     },
-  }
-}
-
-// Serialize datetime props
-// This is not beautiful, but there seems to be no out-of-the-box solution atm
-// @see https://github.com/vercel/next.js/issues/11993
-
-type SerializedBook = Omit<Book, 'createdAt' | 'updatedAt'> & {
-  createdAt: string
-  updatedAt: string
-}
-
-function serializeBook(book: Book): SerializedBook {
-  return {
-    ...book,
-    createdAt: JSON.stringify(book.createdAt),
-    updatedAt: JSON.stringify(book.updatedAt),
   }
 }

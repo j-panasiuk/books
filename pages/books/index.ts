@@ -1,21 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { Book } from '@prisma/client'
-import { prisma } from 'prisma/client'
+import type { Serialized } from 'domain/entity'
+import { BookFilters, matches } from 'domain/entity/book/BookFilters'
+import { hasFilters } from 'utils/query/filters'
 
-export function useBooks() {
-  const [books, setBooks] = useState<Book[]>()
+const initialFilters: BookFilters = {
+  phrase: '',
+}
 
-  useEffect(() => {
-    prisma.book
-      .findMany()
-      .then((data) => {
-        setBooks(data)
-      })
-      .catch((err) => {
-        console.log('Failed to load books', err)
-        setBooks([])
-      })
-  }, [])
+export function useBooks(books: Serialized<Book>[]) {
+  const [filters, setFilters] = useState<BookFilters>(initialFilters)
 
-  return books
+  const resetFilters = useCallback(() => setFilters(initialFilters), [])
+
+  const matchingBooks = hasFilters(filters)
+    ? books.filter(matches(filters))
+    : books
+
+  return {
+    matchingBooks,
+    filters,
+    setFilters,
+    resetFilters,
+  }
 }

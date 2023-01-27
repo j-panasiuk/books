@@ -9,6 +9,8 @@ const prisma = new PrismaClient()
 const seedData: Prisma.BookCreateInput[] = books.map((book) => ({
   author: book.author,
   title: book.title,
+  createdAt: book.created_at,
+  updatedAt: book.updated_at,
 }))
 
 async function seed() {
