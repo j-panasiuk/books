@@ -1,4 +1,5 @@
 import {
+  Button,
   GridItem,
   SimpleGrid,
   Select,
@@ -32,11 +33,16 @@ export function BooksFilters({
       </GridItem>
       <GridItem colSpan={2}>
         <SuggestedBySelect
-          value={filters.suggestedBy}
+          value={filters.suggestedBy || ''}
           onChange={(ev) => {
             setFilters((fs) => ({ ...fs, suggestedBy: ev.target.value }))
           }}
         />
+      </GridItem>
+      <GridItem colSpan={2}>
+        <Button size="sm" onClick={resetFilters}>
+          Reset
+        </Button>
       </GridItem>
     </SimpleGrid>
   )
