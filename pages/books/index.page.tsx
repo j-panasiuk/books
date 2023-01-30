@@ -1,15 +1,10 @@
-import type { InferGetServerSidePropsType } from 'next'
 import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import { prisma } from 'prisma/client'
-import { serialize } from 'domain/entity'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
-import { useBooks } from '.'
+import { useFilteredBooks } from '.'
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>
-
-export default function BooksPage({ books }: Props) {
-  const { matchingBooks, ...controls } = useBooks(books)
+export default function BooksPage() {
+  const { matchingBooks, ...controls } = useFilteredBooks()
 
   return (
     <AppLayout actions={<Button size="sm">+ Add book</Button>}>
@@ -20,6 +15,7 @@ export default function BooksPage({ books }: Props) {
           <Tr>
             <Th>Author</Th>
             <Th>Title</Th>
+            <Th>Suggested By</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -27,24 +23,12 @@ export default function BooksPage({ books }: Props) {
             <Tr key={book.id}>
               <Td>{book.author}</Td>
               <Td fontStyle="italic">{book.title}</Td>
+              <Td>{book.suggestedBy}</Td>
             </Tr>
           ))}
-          {matchingBooks.length === 0 ? 'No books found' : null}
         </Tbody>
       </Table>
+      {matchingBooks.length === 0 ? <p>No books found</p> : null}
     </AppLayout>
   )
-}
-
-export async function getServerSideProps() {
-  const books = await prisma.book.findMany({
-    orderBy: [{ author: 'asc' }, { title: 'asc' }],
-    // take: 100,
-  })
-
-  return {
-    props: {
-      books: books.map(serialize),
-    },
-  }
 }
