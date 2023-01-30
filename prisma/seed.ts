@@ -6,12 +6,23 @@ import books from './books.json'
 
 const prisma = new PrismaClient()
 
-const seedData: Prisma.BookCreateInput[] = books.map((book) => ({
-  author: book.author,
-  title: book.title,
-  createdAt: book.created_at,
-  updatedAt: book.updated_at,
-}))
+const seedData: Prisma.BookCreateInput[] = books.map((book) => {
+  let input: Prisma.BookCreateInput = {
+    author: book.author,
+    title: book.title,
+  }
+  if (book.created_at) {
+    input.createdAt = book.created_at
+  }
+  if (book.updated_at) {
+    input.updatedAt = book.updated_at
+  }
+  if (book.suggested_by) {
+    input.suggestedBy = book.suggested_by.join(', ')
+  }
+
+  return input
+})
 
 async function seed() {
   // Cleanup existing database

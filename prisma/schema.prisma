@@ -16,4 +16,5 @@ model Book {
   updatedAt DateTime @updatedAt
   author String
   title String
+  suggestedBy String?
 }
