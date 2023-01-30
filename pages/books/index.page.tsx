@@ -1,6 +1,16 @@
-import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import {
+  Button,
+  VStack,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from '@chakra-ui/react'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
+import { BooksSorting } from './sorting'
 import { useFilteredBooks } from '.'
 
 export default function BooksPage() {
@@ -8,8 +18,10 @@ export default function BooksPage() {
 
   return (
     <AppLayout actions={<Button size="sm">+ Add book</Button>}>
-      <BooksFilters {...controls} />
-      {/* <Sorting /> */}
+      <VStack>
+        <BooksFilters {...controls} />
+        <BooksSorting {...controls} />
+      </VStack>
       <Table size="sm">
         <Thead>
           <Tr>

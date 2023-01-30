@@ -5,13 +5,10 @@ import type { Serialized } from 'domain/entity'
 import { BookFilters, matches } from 'domain/entity/book/BookFilters'
 import { getSuggestedByPeople } from 'domain/entity/book/Book'
 import { hasFilters } from 'utils/query/filters'
+import { type Sort, ORDER, by } from 'utils/query/sort'
 
 async function fetchBooks(): Promise<Serialized<Book>[]> {
   return fetch('/api/books').then((res) => res.json())
-}
-
-const initialFilters: BookFilters = {
-  phrase: '',
 }
 
 export function useBooks() {
@@ -19,23 +16,38 @@ export function useBooks() {
   return booksQuery.data || []
 }
 
+const initialFilters: BookFilters = {
+  phrase: '',
+}
+
+const initialSort: Sort<Serialized<Book>> = {
+  key: 'updatedAt',
+  order: ORDER.DESC,
+}
+
 export function useFilteredBooks() {
   const books = useBooks()
 
-  const [filters, setFilters] = useState<BookFilters>(initialFilters)
+  const [filters, setFilters] = useState(initialFilters)
+  const [sort, setSort] = useState(initialSort)
 
   const resetFilters = useCallback(() => setFilters(initialFilters), [])
+  const resetSort = useCallback(() => setSort(initialSort), [])
 
   let matchingBooks = books
   if (hasFilters(filters)) {
     matchingBooks = matchingBooks.filter(matches(filters))
   }
+  matchingBooks = matchingBooks.sort(by(sort))
 
   return {
     matchingBooks,
     filters,
     setFilters,
     resetFilters,
+    sort,
+    setSort,
+    resetSort,
   }
 }
 
