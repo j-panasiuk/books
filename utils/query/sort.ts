@@ -23,6 +23,10 @@ export const isSortOrder = (val: unknown): val is SortOrder => {
   return val === ORDER.DESC || val === ORDER.ASC
 }
 
+export function reverse(order: SortOrder): SortOrder {
+  return order * -1
+}
+
 export const by = <T extends Record<string, unknown>>({
   key,
   order,
