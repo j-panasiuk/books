@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { Book } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
@@ -6,14 +6,18 @@ import { BookFilters, matches } from 'domain/entity/book/BookFilters'
 import { getSuggestedByPeople } from 'domain/entity/book/Book'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
-import { type Pagination, range } from 'utils/query/pagination'
+import { type Pagination, countPages, rangeOf } from 'utils/query/pagination'
 
 async function fetchBooks(): Promise<Serialized<Book>[]> {
   return fetch('/api/books').then((res) => res.json())
 }
 
+function useBooksQuery() {
+  return useQuery(['books'], fetchBooks)
+}
+
 export function useBooks() {
-  const booksQuery = useQuery(['books'], fetchBooks)
+  const booksQuery = useBooksQuery()
   return booksQuery.data || []
 }
 
@@ -31,8 +35,8 @@ const initialPagination: Pagination = {
   pageIndex: 0,
 }
 
-export function useFilteredBooks() {
-  const books = useBooks()
+export function useBooksList() {
+  const booksQuery = useBooksQuery()
 
   const [filters, setFilters] = useState(initialFilters)
   const [sort, setSort] = useState(initialSort)
@@ -45,19 +49,32 @@ export function useFilteredBooks() {
     []
   )
 
-  let matchingBooks = books
-  if (hasFilters(filters)) {
-    matchingBooks = matchingBooks.filter(matches(filters))
+  useEffect(() => {
+    setPagination((p) => ({ ...p, pageIndex: 0 }))
+  }, [filters, sort])
+
+  let books = booksQuery.data
+  let itemsTotal = books?.length
+  let itemsMatching = itemsTotal
+
+  if (Array.isArray(books)) {
+    if (hasFilters(filters)) {
+      books = books.filter(matches(filters))
+      itemsMatching = books.length
+    }
+
+    books = books.sort(by(sort))
+
+    if (books.length > pagination.pageSize) {
+      books = books.slice(...rangeOf(pagination))
+    }
   }
 
-  matchingBooks = matchingBooks.sort(by(sort))
-
-  if (matchingBooks.length > pagination.pageSize) {
-    matchingBooks = matchingBooks.slice(...range(pagination))
-  }
+  const pageCount = countPages(pagination, itemsMatching)
 
   return {
-    matchingBooks,
+    booksQuery,
+    books,
     filters,
     setFilters,
     resetFilters,
@@ -67,6 +84,9 @@ export function useFilteredBooks() {
     pagination,
     setPagination,
     resetPagination,
+    itemsTotal,
+    itemsMatching,
+    pageCount,
   }
 }
 

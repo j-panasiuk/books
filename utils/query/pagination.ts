@@ -11,9 +11,18 @@ export type PaginationProps = {
   resetPagination: () => void
 }
 
-export function range({
+export function rangeOf({
   pageIndex,
   pageSize,
 }: Pagination): [start: number, end: number] {
   return [pageIndex * pageSize, (1 + pageIndex) * pageSize]
+}
+
+export function countPages(
+  pagination: Pagination,
+  items?: number
+): number | undefined {
+  if (typeof items === 'number') {
+    return Math.ceil(items / pagination.pageSize)
+  }
 }

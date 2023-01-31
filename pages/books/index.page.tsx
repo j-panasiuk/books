@@ -11,18 +11,20 @@ import {
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
-import { useFilteredBooks } from '.'
+import { BooksPagination } from './pagination'
+import { useBooksList } from '.'
 
 export default function BooksPage() {
-  const { matchingBooks, ...controls } = useFilteredBooks()
+  const { booksQuery, books, ...controls } = useBooksList()
 
   return (
     <AppLayout actions={<Button size="sm">+ Add book</Button>}>
       <VStack>
         <BooksFilters {...controls} />
         <BooksSorting {...controls} />
+        <BooksPagination {...controls} />
       </VStack>
-      <Table size="sm">
+      <Table size="sm" marginTop={2}>
         <Thead>
           <Tr>
             <Th>Author</Th>
@@ -31,7 +33,7 @@ export default function BooksPage() {
           </Tr>
         </Thead>
         <Tbody>
-          {matchingBooks.map((book) => (
+          {books?.map((book) => (
             <Tr key={book.id}>
               <Td>{book.author}</Td>
               <Td fontStyle="italic">{book.title}</Td>
@@ -40,7 +42,7 @@ export default function BooksPage() {
           ))}
         </Tbody>
       </Table>
-      {matchingBooks.length === 0 ? <p>No books found</p> : null}
+      {books?.length === 0 ? <p>No books found</p> : null}
     </AppLayout>
   )
 }
