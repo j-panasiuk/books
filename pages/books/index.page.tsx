@@ -1,5 +1,6 @@
 import {
   Button,
+  HStack,
   VStack,
   Table,
   Tbody,
@@ -18,7 +19,22 @@ export default function BooksPage() {
   const { booksQuery, books, ...controls } = useBooksList()
 
   return (
-    <AppLayout actions={<Button size="sm">+ Add book</Button>}>
+    <AppLayout
+      actions={
+        <HStack spacing={2}>
+          <Button
+            size="sm"
+            variant="outline"
+            color="white"
+            onClick={() => booksQuery.refetch()}
+            isLoading={booksQuery.isFetching}
+          >
+            Refetch
+          </Button>
+          <Button size="sm">+ Add book</Button>
+        </HStack>
+      }
+    >
       <VStack>
         <BooksFilters {...controls} />
         <BooksSorting {...controls} />
