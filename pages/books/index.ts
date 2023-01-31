@@ -6,6 +6,7 @@ import { BookFilters, matches } from 'domain/entity/book/BookFilters'
 import { getSuggestedByPeople } from 'domain/entity/book/Book'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
+import { type Pagination, range } from 'utils/query/pagination'
 
 async function fetchBooks(): Promise<Serialized<Book>[]> {
   return fetch('/api/books').then((res) => res.json())
@@ -25,20 +26,35 @@ const initialSort: Sort<Serialized<Book>> = {
   order: ORDER.DESC,
 }
 
+const initialPagination: Pagination = {
+  pageSize: 100,
+  pageIndex: 0,
+}
+
 export function useFilteredBooks() {
   const books = useBooks()
 
   const [filters, setFilters] = useState(initialFilters)
   const [sort, setSort] = useState(initialSort)
+  const [pagination, setPagination] = useState(initialPagination)
 
   const resetFilters = useCallback(() => setFilters(initialFilters), [])
   const resetSort = useCallback(() => setSort(initialSort), [])
+  const resetPagination = useCallback(
+    () => setPagination(initialPagination),
+    []
+  )
 
   let matchingBooks = books
   if (hasFilters(filters)) {
     matchingBooks = matchingBooks.filter(matches(filters))
   }
+
   matchingBooks = matchingBooks.sort(by(sort))
+
+  if (matchingBooks.length > pagination.pageSize) {
+    matchingBooks = matchingBooks.slice(...range(pagination))
+  }
 
   return {
     matchingBooks,
@@ -48,6 +64,9 @@ export function useFilteredBooks() {
     sort,
     setSort,
     resetSort,
+    pagination,
+    setPagination,
+    resetPagination,
   }
 }
 
