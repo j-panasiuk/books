@@ -1,7 +1,13 @@
-export interface Entity {
+export interface DBEntity {
   id: string
   createdAt: Date
   updatedAt: Date
+}
+
+export interface Entity {
+  id: string
+  createdAt: string
+  updatedAt: string
 }
 
 // Serialize datetime props (Date -> string)
@@ -11,7 +17,7 @@ export interface Entity {
 // This is not beautiful, but there seems to be no out-of-the-box solution atm
 // @see https://github.com/vercel/next.js/issues/11993
 
-export type Serialized<T extends Entity> = Omit<
+export type Serialized<T extends DBEntity> = Omit<
   T,
   'createdAt' | 'updatedAt'
 > & {
@@ -19,7 +25,7 @@ export type Serialized<T extends Entity> = Omit<
   updatedAt: string
 }
 
-export function serialize<T extends Entity>(entity: T): Serialized<T> {
+export function serialize<T extends DBEntity>(entity: T): Serialized<T> {
   return {
     ...entity,
     createdAt: JSON.stringify(entity.createdAt),
