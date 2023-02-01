@@ -1,7 +1,8 @@
 import { HStack, Text } from '@chakra-ui/react'
-import { type PaginationProps } from 'utils/query/pagination'
+import { type Pagination } from 'utils/query/pagination'
 
-interface Props extends PaginationProps {
+type Props = {
+  pagination: Pagination
   itemsMatching?: number
   itemsTotal?: number
 }

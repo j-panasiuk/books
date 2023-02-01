@@ -16,13 +16,7 @@ export function BooksFilters({
   resetFilters,
 }: FiltersProps<BookFilters>) {
   return (
-    <SimpleGrid
-      paddingX={2}
-      marginY={2}
-      spacing={2}
-      columns={6}
-      alignItems="center"
-    >
+    <SimpleGrid paddingX={2} spacing={2} columns={6} alignItems="center">
       <GridItem colSpan={2}>
         <PhraseInput
           value={filters.phrase}

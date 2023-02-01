@@ -10,7 +10,7 @@ export function Pages({
   pagination: { pageIndex },
   setPagination,
 }: Props) {
-  return pageCount === undefined ? null : (
+  return !pageCount ? null : (
     <HStack spacing={1}>
       {pageIndex > 1 && (
         <Button
