@@ -11,14 +11,19 @@ import {
   Text,
   Center,
 } from '@chakra-ui/react'
+import type { Book } from '@prisma/client'
+import type { Serialized } from 'domain/entity'
+import { usePanel } from 'utils/interaction/panel'
 import { PageSize, Pages, Summary } from 'components/Pagination'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
+import { BookPanel } from './panel'
 import { useBooksList } from '.'
 
 export default function BooksPage() {
-  const { booksQuery, books, ...controls } = useBooksList()
+  const { booksQuery, books, ...listControls } = useBooksList()
+  const panelControls = usePanel<Serialized<Book>>()
 
   return (
     <AppLayout
@@ -33,17 +38,19 @@ export default function BooksPage() {
           >
             Refetch
           </Button>
-          <Button size="sm">+ Add book</Button>
+          <Button size="sm" onClick={panelControls.openCreatePanel}>
+            + Add book
+          </Button>
         </HStack>
       }
     >
       <VStack paddingY={2}>
-        <BooksFilters {...controls} />
-        <BooksSorting {...controls} />
-        <PageSize {...controls} />
+        <BooksFilters {...listControls} />
+        <BooksSorting {...listControls} />
+        <PageSize {...listControls} />
         <HStack>
-          <Summary {...controls} />
-          <Pages {...controls} />
+          <Summary {...listControls} />
+          <Pages {...listControls} />
         </HStack>
       </VStack>
       <Table
@@ -80,6 +87,8 @@ export default function BooksPage() {
           </Text>
         </Center>
       ) : null}
+
+      <BookPanel {...panelControls} />
     </AppLayout>
   )
 }
