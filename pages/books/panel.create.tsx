@@ -6,11 +6,14 @@ import {
   FormLabel,
   Input,
   SimpleGrid,
+  useToast,
 } from '@chakra-ui/react'
 import type { Book, Prisma } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
 import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
+import { toastSuccess, toastError } from 'utils/feedback/toast'
+import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelCreate({
   closePanel,
@@ -18,18 +21,30 @@ export function BookPanelCreate({
   openUpdatePanel,
   create,
 }: PanelCreateProps<Serialized<Book>>) {
+  const toast = useToast()
   const [bookInput, setBookInput] = useState<Prisma.BookCreateInput>({
     author: '',
     title: '',
     suggestedBy: '',
   })
 
-  const onSave = (): Promise<Serialized<Book>> => {
+  const onSave = async (): Promise<Serialized<Book>> => {
     try {
       const { author, title, suggestedBy } = bookInput
-      return create({ author, title, suggestedBy })
+      const created = await create({ author, title, suggestedBy })
+      toast({
+        ...toastSuccess,
+        title: 'Created book',
+        description: getShorthand(created),
+      })
+      return created
     } catch (err) {
       console.log('CREATE failed', err)
+      toast({
+        ...toastError,
+        title: 'Failed to create book',
+        description: String(err),
+      })
       return Promise.reject(err)
     }
   }

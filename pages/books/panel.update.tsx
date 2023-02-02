@@ -7,11 +7,14 @@ import {
   FormLabel,
   Input,
   SimpleGrid,
+  useToast,
 } from '@chakra-ui/react'
 import type { Book, Prisma } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
 import type { PanelUpdateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
+import { toastError, toastSuccess } from 'utils/feedback/toast'
+import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelUpdate({
   value,
@@ -20,27 +23,46 @@ export function BookPanelUpdate({
   update,
   remove,
 }: PanelUpdateProps<Serialized<Book>>) {
+  const toast = useToast()
   const [bookInput, setBookInput] = useState<Prisma.BookUpdateInput>({
     author: value.author,
     title: value.title,
     suggestedBy: value.suggestedBy,
   })
 
-  const onSave = (): Promise<Serialized<Book>> => {
+  const onSave = async (): Promise<Serialized<Book>> => {
     try {
       const { author, title, suggestedBy } = bookInput
-      return update(value.id, { author, title, suggestedBy })
+      const updated = await update(value.id, { author, title, suggestedBy })
+      toast({
+        ...toastSuccess,
+        title: 'Updated book',
+        description: getShorthand(updated),
+      })
+      return updated
     } catch (err) {
       console.log('UPDATE failed', err)
+      toast({
+        ...toastError,
+        title: 'Failed to update book',
+        description: String(err),
+      })
       return Promise.reject(err)
     }
   }
 
-  const onRemove = (): Promise<unknown> => {
+  const onRemove = async (): Promise<unknown> => {
     try {
-      return remove(value.id).then(closePanel)
+      const deleted = await remove(value.id).then(closePanel)
+      toast({ ...toastSuccess, title: 'Deleted book' })
+      return deleted
     } catch (err) {
       console.log('DELETE failed', err)
+      toast({
+        ...toastError,
+        title: 'Failed to delete book',
+        description: String(err),
+      })
       return Promise.reject(err)
     }
   }
