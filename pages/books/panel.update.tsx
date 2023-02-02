@@ -54,7 +54,11 @@ export function BookPanelUpdate({
   const onRemove = async (): Promise<unknown> => {
     try {
       const deleted = await remove(value.id).then(closePanel)
-      toast({ ...toastSuccess, title: 'Deleted book' })
+      toast({
+        ...toastSuccess,
+        title: 'Deleted book',
+        description: getShorthand(value),
+      })
       return deleted
     } catch (err) {
       console.log('DELETE failed', err)
