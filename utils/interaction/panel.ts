@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 export interface PanelControls<T> {
-  openCreatePanel: (value?: Partial<T>) => void
-  openUpdatePanel: (value: T) => void
+  openCreatePanel: (initialValue?: Partial<T>) => void
+  openUpdatePanel: (initialValue: T) => void
   closePanel: () => void
 }
 
@@ -11,17 +11,17 @@ export interface Panel<T> extends PanelControls<T> {
 }
 
 type OpenedState<T> =
-  | { type: 'create'; value: Partial<T> | undefined }
-  | { type: 'update'; value: T }
+  | { type: 'create'; initialValue: Partial<T> | undefined }
+  | { type: 'update'; initialValue: T }
 
 export function usePanel<T>(): Panel<T> {
   const [opened, setOpened] = useState<OpenedState<T>>()
 
-  const openCreatePanel = (value?: Partial<T>) => {
-    setOpened({ type: 'create', value })
+  const openCreatePanel = (initialValue?: Partial<T>) => {
+    setOpened({ type: 'create', initialValue })
   }
-  const openUpdatePanel = (value: T) => {
-    setOpened({ type: 'update', value })
+  const openUpdatePanel = (initialValue: T) => {
+    setOpened({ type: 'update', initialValue })
   }
   const closePanel = () => {
     setOpened(undefined)

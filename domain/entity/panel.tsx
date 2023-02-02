@@ -13,12 +13,12 @@ export interface EntityPanelProps<T extends Entity> extends Panel<T> {
 }
 
 export interface PanelCreateProps<T extends Entity> extends PanelControls<T> {
-  value: Partial<T> | undefined
+  initialValue: Partial<T> | undefined
   create: Api.Create<T>
 }
 
 export interface PanelUpdateProps<T extends Entity> extends PanelControls<T> {
-  value: T
+  initialValue: T
   update: Api.Update<T>
   remove: Api.Remove
 }
@@ -45,13 +45,13 @@ export function EntityPanel<T extends Entity>({
           opened.type === 'create' ? (
             <PanelCreate
               {...panelControls}
-              value={opened.value}
+              initialValue={opened.initialValue}
               create={create}
             />
           ) : (
             <PanelUpdate
               {...panelControls}
-              value={opened.value}
+              initialValue={opened.initialValue}
               update={update}
               remove={remove}
             />

@@ -17,7 +17,7 @@ import { toastError, toastSuccess } from 'utils/feedback/toast'
 import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelUpdate({
-  value,
+  initialValue,
   closePanel,
   openCreatePanel,
   update,
@@ -25,15 +25,19 @@ export function BookPanelUpdate({
 }: PanelUpdateProps<Serialized<Book>>) {
   const toast = useToast()
   const [bookInput, setBookInput] = useState<Prisma.BookUpdateInput>({
-    author: value.author,
-    title: value.title,
-    suggestedBy: value.suggestedBy,
+    author: initialValue.author,
+    title: initialValue.title,
+    suggestedBy: initialValue.suggestedBy,
   })
 
   const onSave = async (): Promise<Serialized<Book>> => {
     try {
       const { author, title, suggestedBy } = bookInput
-      const updated = await update(value.id, { author, title, suggestedBy })
+      const updated = await update(initialValue.id, {
+        author,
+        title,
+        suggestedBy,
+      })
       toast({
         ...toastSuccess,
         title: 'Updated book',
@@ -53,11 +57,11 @@ export function BookPanelUpdate({
 
   const onRemove = async (): Promise<unknown> => {
     try {
-      const deleted = await remove(value.id).then(closePanel)
+      const deleted = await remove(initialValue.id).then(closePanel)
       toast({
         ...toastSuccess,
         title: 'Deleted book',
-        description: getShorthand(value),
+        description: getShorthand(initialValue),
       })
       return deleted
     } catch (err) {
@@ -72,14 +76,14 @@ export function BookPanelUpdate({
   }
 
   const saveAndClose = () => onSave().then(closePanel)
-  const copyAsNewDraft = () => openCreatePanel(value)
+  const copyAsNewDraft = () => openCreatePanel(initialValue)
 
   return (
     <PanelContent
       close={closePanel}
       header={
         <Flex alignItems="center" justifyContent="space-between">
-          <>{value.title}</>
+          <>{initialValue.title}</>
           <Button
             size="sm"
             colorScheme="red"
@@ -105,7 +109,7 @@ export function BookPanelUpdate({
           <Input
             id="author"
             type="text"
-            defaultValue={value.author}
+            defaultValue={initialValue.author}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookUpdateInput => {
                 return { ...input, author: ev.target.value }
@@ -119,7 +123,7 @@ export function BookPanelUpdate({
           <Input
             id="title"
             type="text"
-            defaultValue={value.title}
+            defaultValue={initialValue.title}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookUpdateInput => {
                 return { ...input, title: ev.target.value }
@@ -133,7 +137,7 @@ export function BookPanelUpdate({
           <Input
             id="suggested_by"
             type="text"
-            defaultValue={value.suggestedBy ?? ''}
+            defaultValue={initialValue.suggestedBy ?? ''}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookUpdateInput => {
                 const persons = ev.target.value.split(', ').filter(Boolean)
