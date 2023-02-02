@@ -13,7 +13,7 @@ export interface EntityPanelProps<T extends Entity> extends Panel<T> {
 }
 
 export interface PanelCreateProps<T extends Entity> extends PanelControls<T> {
-  value: undefined
+  value: Partial<T> | undefined
   create: Api.Create<T>
 }
 

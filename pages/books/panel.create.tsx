@@ -16,6 +16,7 @@ import { toastSuccess, toastError } from 'utils/feedback/toast'
 import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelCreate({
+  value,
   closePanel,
   openCreatePanel,
   openUpdatePanel,
@@ -23,9 +24,9 @@ export function BookPanelCreate({
 }: PanelCreateProps<Serialized<Book>>) {
   const toast = useToast()
   const [bookInput, setBookInput] = useState<Prisma.BookCreateInput>({
-    author: '',
-    title: '',
-    suggestedBy: '',
+    author: value?.author || '',
+    title: value?.title || '',
+    suggestedBy: value?.suggestedBy || '',
   })
 
   const onSave = async (): Promise<Serialized<Book>> => {
@@ -75,6 +76,7 @@ export function BookPanelCreate({
           <Input
             id="author"
             type="text"
+            defaultValue={value?.author}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookCreateInput => {
                 return { ...input, author: ev.target.value }
@@ -88,6 +90,7 @@ export function BookPanelCreate({
           <Input
             id="title"
             type="text"
+            defaultValue={value?.title}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookCreateInput => {
                 return { ...input, title: ev.target.value }
@@ -101,6 +104,7 @@ export function BookPanelCreate({
           <Input
             id="suggested_by"
             type="text"
+            defaultValue={value?.suggestedBy ?? ''}
             onChange={(ev) => {
               setBookInput((input): Prisma.BookCreateInput => {
                 const persons = ev.target.value.split(', ').filter(Boolean)

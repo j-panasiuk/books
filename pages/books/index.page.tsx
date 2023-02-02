@@ -42,7 +42,7 @@ export default function BooksPage() {
           >
             Refetch
           </Button>
-          <Button size="sm" onClick={panelControls.openCreatePanel}>
+          <Button size="sm" onClick={() => panelControls.openCreatePanel()}>
             + Add book
           </Button>
         </HStack>

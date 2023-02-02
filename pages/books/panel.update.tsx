@@ -72,7 +72,7 @@ export function BookPanelUpdate({
   }
 
   const saveAndClose = () => onSave().then(closePanel)
-  const copyAsNewDraft = () => openCreatePanel() // TODO pass initial values
+  const copyAsNewDraft = () => openCreatePanel(value)
 
   return (
     <PanelContent
