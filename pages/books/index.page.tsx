@@ -19,6 +19,7 @@ import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
 import { BookPanel } from './panel'
+import { api } from './index.api'
 import { useBooksList } from '.'
 
 export default function BooksPage() {
@@ -88,7 +89,7 @@ export default function BooksPage() {
         </Center>
       ) : null}
 
-      <BookPanel {...panelControls} />
+      <BookPanel {...panelControls} {...api} />
     </AppLayout>
   )
 }

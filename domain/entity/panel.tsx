@@ -1,23 +1,34 @@
 import { Drawer, DrawerContent, DrawerOverlay } from '@chakra-ui/react'
 import type { ComponentType } from 'react'
-import type { Panel } from 'utils/interaction/panel'
+import type { Panel, PanelControls } from 'utils/interaction/panel'
+import type * as Api from './api'
 import type { Entity } from '.'
 
 export interface EntityPanelProps<T extends Entity> extends Panel<T> {
-  CreatePanel: ComponentType<{
-    value: undefined
-    create: () => void // TODO
-  }>
-  UpdatePanel: ComponentType<{
-    value: T
-    update: () => void // TODO
-    remove: () => void // TODO
-  }>
+  PanelCreate: ComponentType<PanelCreateProps<T>>
+  PanelUpdate: ComponentType<PanelUpdateProps<T>>
+  create: Api.Create<T>
+  update: Api.Update<T>
+  remove: Api.Remove
+}
+
+interface PanelCreateProps<T extends Entity> extends PanelControls<T> {
+  value: undefined
+  create: Api.Create<T>
+}
+
+interface PanelUpdateProps<T extends Entity> extends PanelControls<T> {
+  value: T
+  update: Api.Update<T>
+  remove: Api.Remove
 }
 
 export function EntityPanel<T extends Entity>({
-  CreatePanel,
-  UpdatePanel,
+  PanelCreate,
+  PanelUpdate,
+  create,
+  update,
+  remove,
   ...panel
 }: EntityPanelProps<T>) {
   const { opened, ...panelControls } = panel
@@ -32,17 +43,17 @@ export function EntityPanel<T extends Entity>({
       <DrawerContent>
         {opened ? (
           opened.type === 'create' ? (
-            <CreatePanel
+            <PanelCreate
               {...panelControls}
               value={opened.value}
-              create={() => console.log('TODO create book')}
+              create={create}
             />
           ) : (
-            <UpdatePanel
+            <PanelUpdate
               {...panelControls}
               value={opened.value}
-              update={() => console.log('TODO update book')}
-              remove={() => console.log('TODO remove book')}
+              update={update}
+              remove={remove}
             />
           )
         ) : null}

@@ -13,3 +13,9 @@ export type Update<T extends Entity> = (
 ) => Promise<T>
 
 export type Remove = (id: Entity['id']) => Promise<unknown>
+
+export interface Api<T extends Entity> {
+  create: Create<T>
+  update: Update<T>
+  remove: Remove
+}

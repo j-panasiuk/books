@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-interface PanelControls<T> {
+export interface PanelControls<T> {
   openCreatePanel: () => void
   openUpdatePanel: (value: T) => void
   closePanel: () => void

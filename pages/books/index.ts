@@ -7,10 +7,7 @@ import { getSuggestedByPeople } from 'domain/entity/book/Book'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
 import { type Pagination, countPages, rangeOf } from 'utils/query/pagination'
-
-async function fetchBooks(): Promise<Serialized<Book>[]> {
-  return fetch('/api/books').then((res) => res.json())
-}
+import { fetchBooks } from './index.api'
 
 function useBooksQuery() {
   return useQuery(['books'], fetchBooks)
