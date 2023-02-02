@@ -10,11 +10,14 @@ import {
   Tr,
   Text,
   Center,
+  ButtonGroup,
+  IconButton,
 } from '@chakra-ui/react'
 import type { Book } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
 import { usePanel } from 'utils/interaction/panel'
 import { PageSize, Pages, Summary } from 'components/Pagination'
+import { Pencil } from 'components/Icons/Pencil'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
@@ -65,6 +68,7 @@ export default function BooksPage() {
             <Th>Author</Th>
             <Th>Title</Th>
             <Th>Suggested By</Th>
+            <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -73,6 +77,16 @@ export default function BooksPage() {
               <Td>{book.author}</Td>
               <Td fontStyle="italic">{book.title}</Td>
               <Td>{book.suggestedBy}</Td>
+              <Td isNumeric>
+                <ButtonGroup size="sm" variant="ghost" color="gray.300">
+                  <IconButton
+                    title="Edit"
+                    aria-label="Edit"
+                    icon={<Pencil size={20} />}
+                    onClick={() => panelControls.openUpdatePanel(book)}
+                  />
+                </ButtonGroup>
+              </Td>
             </Tr>
           ))}
         </Tbody>

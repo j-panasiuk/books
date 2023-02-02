@@ -9,20 +9,15 @@ import {
 } from '@chakra-ui/react'
 import type { Book, Prisma } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
-import type { Create } from 'domain/entity/api'
-import type { PanelControls } from 'utils/interaction/panel'
+import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
-
-interface Props extends PanelControls<Serialized<Book>> {
-  create: Create<Serialized<Book>>
-}
 
 export function BookPanelCreate({
   closePanel,
   openCreatePanel,
   openUpdatePanel,
   create,
-}: Props) {
+}: PanelCreateProps<Serialized<Book>>) {
   const [bookInput, setBookInput] = useState<Prisma.BookCreateInput>({
     author: '',
     title: '',

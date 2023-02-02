@@ -12,12 +12,12 @@ export interface EntityPanelProps<T extends Entity> extends Panel<T> {
   remove: Api.Remove
 }
 
-interface PanelCreateProps<T extends Entity> extends PanelControls<T> {
+export interface PanelCreateProps<T extends Entity> extends PanelControls<T> {
   value: undefined
   create: Api.Create<T>
 }
 
-interface PanelUpdateProps<T extends Entity> extends PanelControls<T> {
+export interface PanelUpdateProps<T extends Entity> extends PanelControls<T> {
   value: T
   update: Api.Update<T>
   remove: Api.Remove
