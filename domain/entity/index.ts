@@ -1,3 +1,7 @@
+import * as s from 'superstruct'
+import { datetimeStruct } from 'domain/attribute/datetime'
+import { idStruct } from 'domain/attribute/id'
+
 export interface DBEntity {
   id: string
   createdAt: Date
@@ -9,6 +13,18 @@ export interface Entity {
   createdAt: string
   updatedAt: string
 }
+
+export const DBEntityStruct = s.type({
+  id: idStruct,
+  createdAt: s.date(),
+  updatedAt: s.date(),
+}) satisfies s.Describe<DBEntity>
+
+export const EntityStruct = s.type({
+  id: idStruct,
+  createdAt: datetimeStruct,
+  updatedAt: datetimeStruct,
+}) satisfies s.Describe<Entity>
 
 // Serialize datetime props (Date -> string)
 // Reason: server-side can use js Date objects, but can't send them to client-side
@@ -25,6 +41,9 @@ export type Serialized<T extends DBEntity> = Omit<
   updatedAt: string
 }
 
+/**
+ * @deprecated
+ */
 export function serialize<T extends DBEntity>(entity: T): Serialized<T> {
   return {
     ...entity,

@@ -12,7 +12,11 @@ import type { Book, Prisma } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
 import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
-import { toastSuccess, toastError } from 'utils/feedback/toast'
+import {
+  getErrorToastDescription,
+  toastSuccess,
+  toastError,
+} from 'utils/feedback/toast'
 import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelCreate({
@@ -40,11 +44,10 @@ export function BookPanelCreate({
       })
       return created
     } catch (err) {
-      console.log('CREATE failed', err)
       toast({
         ...toastError,
         title: 'Failed to create book',
-        description: String(err),
+        description: getErrorToastDescription(err),
       })
       return Promise.reject(err)
     }

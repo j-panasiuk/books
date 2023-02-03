@@ -13,7 +13,11 @@ import type { Book, Prisma } from '@prisma/client'
 import type { Serialized } from 'domain/entity'
 import type { PanelUpdateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
-import { toastError, toastSuccess } from 'utils/feedback/toast'
+import {
+  getErrorToastDescription,
+  toastError,
+  toastSuccess,
+} from 'utils/feedback/toast'
 import { getShorthand } from 'domain/entity/book/Book'
 
 export function BookPanelUpdate({
@@ -45,11 +49,10 @@ export function BookPanelUpdate({
       })
       return updated
     } catch (err) {
-      console.log('UPDATE failed', err)
       toast({
         ...toastError,
         title: 'Failed to update book',
-        description: String(err),
+        description: getErrorToastDescription(err),
       })
       return Promise.reject(err)
     }
@@ -65,11 +68,10 @@ export function BookPanelUpdate({
       })
       return deleted
     } catch (err) {
-      console.log('DELETE failed', err)
       toast({
         ...toastError,
         title: 'Failed to delete book',
-        description: String(err),
+        description: getErrorToastDescription(err),
       })
       return Promise.reject(err)
     }
