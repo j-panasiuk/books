@@ -39,10 +39,7 @@ export const request = {
 } as const
 
 async function send(endpoint: string, init?: RequestInit): Promise<unknown> {
-  try {
-    const res = await fetch(endpoint, init)
-    return res.json()
-  } catch (err) {
-    return Promise.reject(err)
-  }
+  const res = await fetch(endpoint, init)
+  if (!res.ok) throw await res.json()
+  return res.json()
 }
