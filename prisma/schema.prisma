@@ -17,4 +17,6 @@ model Book {
   author String
   title String
   suggestedBy String?
+
+  @@unique([author, title])
 }
