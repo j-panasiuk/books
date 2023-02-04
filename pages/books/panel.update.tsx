@@ -9,8 +9,8 @@ import {
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react'
-import type { Book, Prisma } from '@prisma/client'
-import type { Serialized } from 'domain/entity'
+import type { Prisma } from '@prisma/client'
+import type { Book } from 'domain/entity/book/Book'
 import type { PanelUpdateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
 import {
@@ -26,7 +26,7 @@ export function BookPanelUpdate({
   openCreatePanel,
   update,
   remove,
-}: PanelUpdateProps<Serialized<Book>>) {
+}: PanelUpdateProps<Book>) {
   const toast = useToast()
   const [bookInput, setBookInput] = useState<Prisma.BookUpdateInput>({
     author: initialValue.author,
@@ -34,7 +34,7 @@ export function BookPanelUpdate({
     suggestedBy: initialValue.suggestedBy,
   })
 
-  const onSave = async (): Promise<Serialized<Book>> => {
+  const onSave = async (): Promise<Book> => {
     try {
       const { author, title, suggestedBy } = bookInput
       const updated = await update(initialValue.id, {

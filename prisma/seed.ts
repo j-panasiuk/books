@@ -21,6 +21,12 @@ const seedData: Prisma.BookCreateInput[] = books.map((book) => {
     input.suggestedBy = book.suggested_by.join(', ')
   }
 
+  input.volumes = {
+    create: book.tomes.map((tome, i) => ({
+      no: i + 1,
+    })),
+  }
+
   return input
 })
 

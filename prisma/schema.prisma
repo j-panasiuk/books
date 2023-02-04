@@ -11,12 +11,21 @@ datasource db {
 }
 
 model Book {
-  id          String   @id @default(uuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id          String       @id @default(uuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   author      String
   title       String
   suggestedBy String?
+  volumes     BookVolume[]
 
   @@unique([author, title])
+}
+
+model BookVolume {
+  no     Int    @default(1)
+  bookId String
+  book   Book   @relation(fields: [bookId], references: [id])
+
+  @@id([bookId, no])
 }

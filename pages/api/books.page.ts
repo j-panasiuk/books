@@ -9,7 +9,15 @@ export default async function (
 ) {
   switch (req.method) {
     case 'GET': {
-      const books = await prisma.book.findMany({})
+      const books = await prisma.book.findMany({
+        include: {
+          volumes: {
+            select: {
+              no: true,
+            },
+          },
+        },
+      })
       return res.status(200).json(books)
     }
 

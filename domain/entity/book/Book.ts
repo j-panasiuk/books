@@ -1,6 +1,12 @@
-import type { Book } from '@prisma/client'
+import type * as DB from '@prisma/client'
 import * as s from 'superstruct'
 import { EntityStruct, Serialized } from 'domain/entity'
+
+// TODO move BookVolume stuff to separate module
+
+export type Book = Serialized<DB.Book> & {
+  volumes: Pick<DB.BookVolume, 'no'>[]
+}
 
 // --- SCHEMA ---
 
@@ -10,8 +16,9 @@ export const bookSchema = s.assign(
     author: s.string(),
     title: s.string(),
     suggestedBy: s.nullable(s.string()),
+    volumes: s.array(s.object({ no: s.integer() })),
   })
-) satisfies s.Describe<Serialized<Book>>
+) satisfies s.Describe<Book>
 
 export const booksSchema = s.array(bookSchema)
 

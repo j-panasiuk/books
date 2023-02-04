@@ -1,15 +1,10 @@
 import { Button, ButtonGroup, HStack, Text } from '@chakra-ui/react'
-import type { Book } from '@prisma/client'
-import type { Serialized } from 'domain/entity'
+import type { Book } from 'domain/entity/book/Book'
 import { bookSortOptions, sortBy } from 'domain/entity/book/BookSorts'
 import { type SortProps, ORDER, reverse } from 'utils/query/sort'
 
-export function BooksSorting({
-  sort,
-  setSort,
-  resetSort,
-}: SortProps<Serialized<Book>>) {
-  const onSort = (key: keyof Serialized<Book>) => {
+export function BooksSorting({ sort, setSort, resetSort }: SortProps<Book>) {
+  const onSort = (key: keyof Book) => {
     setSort((currentSort) => {
       return sortBy(
         key,

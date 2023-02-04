@@ -1,0 +1,6 @@
+-- CreateTable
+CREATE TABLE "BookVolume" (
+    "no" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT DEFAULT 1,
+    "bookId" TEXT NOT NULL,
+    CONSTRAINT "BookVolume_bookId_fkey" FOREIGN KEY ("bookId") REFERENCES "Book" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

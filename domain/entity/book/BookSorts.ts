@@ -1,8 +1,7 @@
-import type { Book } from '@prisma/client'
+import type { Book } from 'domain/entity/book/Book'
 import { ORDER, SortOrder, Sort } from 'utils/query/sort'
-import { Serialized } from '..'
 
-type BookSortKey = keyof Serialized<Book>
+type BookSortKey = keyof Book
 
 type BookSort = {
   key: BookSortKey
@@ -13,14 +12,12 @@ export const bookSortOptions: BookSort[] = [
   { key: 'author', defaultOrder: ORDER.ASC },
   { key: 'title', defaultOrder: ORDER.ASC },
   { key: 'suggestedBy', defaultOrder: ORDER.ASC },
+  { key: 'volumes', defaultOrder: ORDER.DESC },
   { key: 'createdAt', defaultOrder: ORDER.DESC },
   { key: 'updatedAt', defaultOrder: ORDER.DESC },
 ]
 
-export const sortBy = (
-  key: BookSortKey,
-  order?: SortOrder
-): Sort<Serialized<Book>> => {
+export const sortBy = (key: BookSortKey, order?: SortOrder): Sort<Book> => {
   return {
     key,
     order:

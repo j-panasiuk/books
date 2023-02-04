@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import type { Book } from '@prisma/client'
-import type { Serialized } from 'domain/entity'
+import type { Book } from 'domain/entity/book/Book'
 import { BookFilters, matches } from 'domain/entity/book/BookFilters'
 import { getSuggestedByPeople } from 'domain/entity/book/Book'
 import { hasFilters } from 'utils/query/filters'
@@ -22,7 +21,7 @@ const initialFilters: BookFilters = {
   phrase: '',
 }
 
-const initialSort: Sort<Serialized<Book>> = {
+const initialSort: Sort<Book> = {
   key: 'updatedAt',
   order: ORDER.DESC,
 }

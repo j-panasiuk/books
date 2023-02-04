@@ -1,5 +1,6 @@
 import {
   Button,
+  Box,
   HStack,
   VStack,
   Table,
@@ -13,8 +14,7 @@ import {
   ButtonGroup,
   IconButton,
 } from '@chakra-ui/react'
-import type { Book } from '@prisma/client'
-import type { Serialized } from 'domain/entity'
+import type { Book } from 'domain/entity/book/Book'
 import { usePanel } from 'utils/interaction/panel'
 import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
@@ -27,7 +27,7 @@ import { useBooksList } from '.'
 
 export default function BooksPage() {
   const { booksQuery, books, ...listControls } = useBooksList()
-  const panelControls = usePanel<Serialized<Book>>()
+  const panelControls = usePanel<Book>()
 
   return (
     <AppLayout
@@ -67,6 +67,7 @@ export default function BooksPage() {
           <Tr>
             <Th>Author</Th>
             <Th>Title</Th>
+            <Th>Volumes</Th>
             <Th>Suggested By</Th>
             <Th>Actions</Th>
           </Tr>
@@ -76,6 +77,17 @@ export default function BooksPage() {
             <Tr key={book.id}>
               <Td>{book.author}</Td>
               <Td fontStyle="italic">{book.title}</Td>
+              <Td>
+                <HStack spacing={1}>
+                  {book.volumes.map(({ no }) => (
+                    <Box key={no} p={1} border="1px" borderColor="gray.300">
+                      <Text fontSize="sm" fontWeight="bold" color="gray.300">
+                        {no}
+                      </Text>
+                    </Box>
+                  ))}
+                </HStack>
+              </Td>
               <Td>{book.suggestedBy}</Td>
               <Td isNumeric>
                 <ButtonGroup size="sm" variant="ghost" color="gray.300">
@@ -102,6 +114,13 @@ export default function BooksPage() {
           </Text>
         </Center>
       ) : null}
+
+      <VStack paddingY={2}>
+        <HStack>
+          <Summary {...listControls} />
+          <Pages {...listControls} />
+        </HStack>
+      </VStack>
 
       <BookPanel {...panelControls} {...api} />
     </AppLayout>
