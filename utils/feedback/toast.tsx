@@ -1,4 +1,4 @@
-import { Code, UseToastOptions } from '@chakra-ui/react'
+import { UseToastOptions } from '@chakra-ui/react'
 import { isResponseError } from 'utils/api/response'
 
 export const toastSuccess: UseToastOptions = {
