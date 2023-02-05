@@ -1,5 +1,6 @@
 import type * as DB from '@prisma/client'
 import * as s from 'superstruct'
+import { nameStruct } from 'domain/attribute/name'
 import { type Serialized, entityStruct } from 'domain/entity'
 import { type BookVolume, bookVolumesStruct } from 'domain/entity/BookVolume'
 
@@ -11,7 +12,7 @@ export const bookStruct = s.assign(
   entityStruct,
   s.type({
     author: s.string(),
-    title: s.string(), // TODO title -> attribute
+    title: nameStruct,
     suggestedBy: s.nullable(s.string()),
     volumes: bookVolumesStruct,
   })

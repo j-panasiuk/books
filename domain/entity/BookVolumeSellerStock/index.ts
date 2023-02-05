@@ -1,5 +1,6 @@
-import { Stock, stockStruct } from 'domain/attribute/stock'
 import * as s from 'superstruct'
+import { nameStruct } from 'domain/attribute/name'
+import { Stock, stockStruct } from 'domain/attribute/stock'
 
 export type BookVolumeSellerStock = {
   sellerName: string
@@ -8,7 +9,7 @@ export type BookVolumeSellerStock = {
 
 export const bookVolumeSellerStockStruct = s.type({
   stock: stockStruct,
-  sellerName: s.nonempty(s.string()), // TODO name -> attribute
+  sellerName: nameStruct,
 }) satisfies s.Describe<BookVolumeSellerStock>
 
 export const bookVolumeSellerStocksStruct = s.array(

@@ -1,4 +1,5 @@
 import * as s from 'superstruct'
+import { noStruct } from 'domain/attribute/no'
 import {
   bookVolumeSellerStocksStruct,
   type BookVolumeSellerStock,
@@ -10,7 +11,7 @@ export type BookVolume = {
 }
 
 export const bookVolumeStruct = s.type({
-  no: s.integer(), // TODO create new attribute
+  no: noStruct,
   sellers: bookVolumeSellerStocksStruct,
 }) satisfies s.Describe<BookVolume>
 
