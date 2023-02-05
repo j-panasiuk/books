@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, HStack, Text } from '@chakra-ui/react'
-import type { Book } from 'domain/entity/book/Book'
-import { bookSortOptions, sortBy } from 'domain/entity/book/BookSorts'
+import type { Book } from 'domain/entity/Book'
+import { bookSortOptions, sortBy } from 'domain/entity/Book/BookSorts'
 import { type SortProps, ORDER, reverse } from 'utils/query/sort'
 
 export function BooksSorting({ sort, setSort, resetSort }: SortProps<Book>) {

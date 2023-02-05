@@ -1,12 +1,13 @@
 import {
+  type InputProps,
+  type SelectProps,
   Button,
   GridItem,
   SimpleGrid,
+  Input,
   Select,
-  type SelectProps,
 } from '@chakra-ui/react'
-import { PhraseInput } from 'domain/attribute/phrase/input'
-import { type BookFilters } from 'domain/entity/book/BookFilters'
+import { type BookFilters } from 'domain/entity/Book/BookFilters'
 import { type FiltersProps } from 'utils/query/filters'
 import { useBooksSuggestedByPeople } from '.'
 
@@ -40,6 +41,10 @@ export function BooksFilters({
       </GridItem>
     </SimpleGrid>
   )
+}
+
+function PhraseInput(props: InputProps) {
+  return <Input size="sm" type="search" placeholder="Phrase..." {...props} />
 }
 
 function SuggestedBySelect(props: SelectProps) {

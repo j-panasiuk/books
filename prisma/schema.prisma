@@ -23,9 +23,27 @@ model Book {
 }
 
 model BookVolume {
-  no     Int    @default(1)
-  bookId String
-  book   Book   @relation(fields: [bookId], references: [id])
+  no      Int                     @default(1)
+  bookId  String
+  book    Book                    @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellers BookVolumeSellerStock[]
 
   @@id([bookId, no])
+}
+
+model BookVolumeSellerStock {
+  stock      String
+  bookId     String
+  volumeNo   Int
+  sellerName String
+  volume     BookVolume @relation(fields: [bookId, volumeNo], references: [bookId, no], onDelete: Cascade, onUpdate: Cascade)
+  seller     Seller     @relation(fields: [sellerName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([bookId, volumeNo, sellerName])
+}
+
+model Seller {
+  name             String                  @id
+  icon             String
+  bookVolumeStocks BookVolumeSellerStock[]
 }

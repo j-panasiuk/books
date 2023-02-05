@@ -1,4 +1,4 @@
-import type { Book } from 'domain/entity/book/Book'
+import type { Book } from 'domain/entity/Book'
 import type { Matches } from 'utils/matches'
 
 export type BookFilters = Partial<{

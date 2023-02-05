@@ -9,7 +9,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import type { Prisma } from '@prisma/client'
-import type { Book } from 'domain/entity/book/Book'
+import type { Book } from 'domain/entity/Book'
 import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
 import {
@@ -17,7 +17,7 @@ import {
   toastSuccess,
   toastError,
 } from 'utils/feedback/toast'
-import { getShorthand } from 'domain/entity/book/Book'
+import { getShorthand } from 'domain/entity/Book'
 
 export function BookPanelCreate({
   initialValue,

@@ -14,13 +14,13 @@ export interface Entity {
   updatedAt: string
 }
 
-export const DBEntityStruct = s.type({
+export const dbEntityStruct = s.type({
   id: idStruct,
   createdAt: s.date(),
   updatedAt: s.date(),
 }) satisfies s.Describe<DBEntity>
 
-export const EntityStruct = s.type({
+export const entityStruct = s.type({
   id: idStruct,
   createdAt: datetimeStruct,
   updatedAt: datetimeStruct,

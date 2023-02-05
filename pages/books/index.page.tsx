@@ -14,19 +14,24 @@ import {
   ButtonGroup,
   IconButton,
 } from '@chakra-ui/react'
-import type { Book } from 'domain/entity/book/Book'
+import type { Seller } from '@prisma/client'
 import { usePanel } from 'utils/interaction/panel'
 import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
+import type { Book } from 'domain/entity/Book'
+import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
 import { BookPanel } from './panel'
 import { api } from './index.api'
-import { useBooksList } from '.'
+import { useBooksList, useSellers } from '.'
+import { BookVolume } from 'domain/entity/BookVolume'
+import { Stock } from 'domain/attribute/stock'
 
 export default function BooksPage() {
   const { booksQuery, books, ...listControls } = useBooksList()
+  const sellers = useSellers()
   const panelControls = usePanel<Book>()
 
   return (
@@ -69,6 +74,7 @@ export default function BooksPage() {
             <Th>Title</Th>
             <Th>Volumes</Th>
             <Th>Suggested By</Th>
+            <Th>Sellers</Th>
             <Th>Actions</Th>
           </Tr>
         </Thead>
@@ -89,6 +95,17 @@ export default function BooksPage() {
                 </HStack>
               </Td>
               <Td>{book.suggestedBy}</Td>
+              <Td>
+                <HStack spacing={1}>
+                  {sellers.map((seller) => (
+                    <BookSellerStock
+                      key={seller.name}
+                      seller={seller}
+                      volumes={book.volumes}
+                    />
+                  ))}
+                </HStack>
+              </Td>
               <Td isNumeric>
                 <ButtonGroup size="sm" variant="ghost" color="gray.300">
                   <IconButton
@@ -124,5 +141,33 @@ export default function BooksPage() {
 
       <BookPanel {...panelControls} {...api} />
     </AppLayout>
+  )
+}
+
+type BookSellerStockProps = {
+  seller: Seller
+  volumes: BookVolume[]
+}
+
+function BookSellerStock({ seller, volumes }: BookSellerStockProps) {
+  const volumeStocks = new Set(
+    volumes
+      .flatMap((vol) => vol.sellers)
+      .filter((s) => s.sellerName === seller.name)
+      .map((s) => s.stock)
+  )
+
+  let stock: Stock | undefined
+  if (volumeStocks.has('none')) stock = 'none'
+  if (volumeStocks.has('out_of_stock')) stock = 'out_of_stock'
+  if (volumeStocks.has('available')) stock = 'available'
+
+  return (
+    <SellerStockIcon
+      sellerName={seller.name}
+      sellerIcon={seller.icon}
+      stock={stock}
+      borderStyle={volumeStocks.size > 1 ? 'dashed' : 'inherit'}
+    />
   )
 }

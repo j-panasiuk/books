@@ -1,4 +1,4 @@
-import type { Book } from 'domain/entity/book/Book'
+import type { Book } from 'domain/entity/Book'
 import type { Api } from 'domain/entity/api'
 import type { PanelControls } from 'utils/interaction/panel'
 import { EntityPanel } from 'domain/entity/panel'

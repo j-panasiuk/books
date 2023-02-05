@@ -1,4 +1,4 @@
-import type { Book } from 'domain/entity/book/Book'
+import type { Book } from 'domain/entity/Book'
 import { ORDER, SortOrder, Sort } from 'utils/query/sort'
 
 type BookSortKey = keyof Book

@@ -14,6 +14,12 @@ export default async function (
           volumes: {
             select: {
               no: true,
+              sellers: {
+                select: {
+                  sellerName: true,
+                  stock: true,
+                },
+              },
             },
           },
         },

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import type { Book } from 'domain/entity/book/Book'
-import { BookFilters, matches } from 'domain/entity/book/BookFilters'
-import { getSuggestedByPeople } from 'domain/entity/book/Book'
+import type { Book } from 'domain/entity/Book'
+import { BookFilters, matches } from 'domain/entity/Book/BookFilters'
+import { getSuggestedByPeople } from 'domain/entity/Book'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
 import { type Pagination, countPages, rangeOf } from 'utils/query/pagination'
-import { fetchBooks } from './index.api'
+import { fetchBooks, fetchSellers } from './index.api'
 
 function useBooksQuery() {
   return useQuery(['books'], fetchBooks)
@@ -100,4 +100,15 @@ export function useBooksSuggestedByPeople() {
   }, [books])
 
   return people
+}
+
+export function useSellersQuery() {
+  return useQuery(['sellers'], fetchSellers, {
+    staleTime: 1000 * 60 * 60 * 12,
+  })
+}
+
+export function useSellers() {
+  const sellersQuery = useSellersQuery()
+  return sellersQuery.data || []
 }
