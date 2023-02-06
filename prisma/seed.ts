@@ -16,8 +16,6 @@ books.forEach((book) => {
   })
 })
 
-console.log('sellers', sellers)
-
 const seedSellers: Prisma.SellerCreateInput[] = Array.from(sellers).map(
   (seller) => {
     const iconName = seller.split('_')[0]
@@ -30,8 +28,8 @@ const seedSellers: Prisma.SellerCreateInput[] = Array.from(sellers).map(
 
 const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
   let input: Prisma.BookCreateInput = {
-    author: book.author,
-    title: book.title,
+    author: book.author.trim(),
+    title: book.title.trim(),
   }
 
   if (book.created_at) {
@@ -41,7 +39,7 @@ const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
     input.updatedAt = book.updated_at
   }
   if (book.suggested_by) {
-    input.suggestedBy = book.suggested_by.join(', ')
+    input.suggestedBy = book.suggested_by.join(', ').trim()
   }
 
   input.volumes = {
