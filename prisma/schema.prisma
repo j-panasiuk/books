@@ -27,6 +27,7 @@ model BookVolume {
   bookId  String
   book    Book                    @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellers BookVolumeSellerStock[]
+  title   String?
 
   @@id([bookId, no])
 }

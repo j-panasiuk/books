@@ -1,3 +1,8 @@
 import * as s from 'superstruct'
 
-export const noStruct = s.min(s.integer(), 1)
+/** Positive integer index */
+export const noStruct = s.coerce(
+  s.min(s.integer(), 1),
+  s.unknown(),
+  (val) => val ?? 1
+)
