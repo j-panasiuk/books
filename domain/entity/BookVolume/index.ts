@@ -1,6 +1,6 @@
 import * as s from 'superstruct'
 import { nameStruct } from 'domain/attribute/name'
-import { noStruct } from 'domain/attribute/no'
+import { positiveCountStruct } from 'domain/attribute/count'
 import {
   bookVolumeSellerStockStruct,
   type BookVolumeSellerStock,
@@ -9,13 +9,13 @@ import {
 export type BookVolume = {
   no: number
   sellers: BookVolumeSellerStock[]
-  title?: string | null
+  title: string
 }
 
 export const bookVolumeStruct = s.type({
-  no: noStruct,
+  no: positiveCountStruct,
   sellers: s.array(bookVolumeSellerStockStruct),
-  title: s.optional(s.nullable(nameStruct)),
+  title: nameStruct,
 }) satisfies s.Describe<BookVolume>
 
 export function canRemoveVolume(

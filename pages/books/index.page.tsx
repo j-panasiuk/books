@@ -14,11 +14,13 @@ import {
   ButtonGroup,
   IconButton,
 } from '@chakra-ui/react'
-import type { Seller } from '@prisma/client'
 import { usePanel } from 'utils/interaction/panel'
 import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
+import type { Stock } from 'domain/attribute/stock'
+import type { Seller } from 'domain/entity/Seller'
 import type { Book } from 'domain/entity/Book'
+import type { BookVolume } from 'domain/entity/BookVolume'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
 import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
@@ -26,8 +28,6 @@ import { BooksSorting } from './sorting'
 import { BookPanel } from './panel'
 import { api } from './index.api'
 import { useBooksList, useSellers } from '.'
-import { BookVolume } from 'domain/entity/BookVolume'
-import { Stock } from 'domain/attribute/stock'
 
 export default function BooksPage() {
   const { booksQuery, books, ...listControls } = useBooksList()
