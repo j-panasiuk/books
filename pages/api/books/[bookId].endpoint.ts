@@ -21,7 +21,7 @@ export default async function bookHandler(
         })
         return res.status(200).json(updated)
       } catch (err) {
-        const { status, ...responseError } = handleResponseError(err)
+        const { status, ...responseError } = await handleResponseError(err)
         return res.status(status).json(responseError)
       }
     }
@@ -33,7 +33,7 @@ export default async function bookHandler(
         })
         return res.status(200).json(deleted)
       } catch (err) {
-        const { status, ...responseError } = handleResponseError(err)
+        const { status, ...responseError } = await handleResponseError(err)
         return res.status(status).json(responseError)
       }
     }
