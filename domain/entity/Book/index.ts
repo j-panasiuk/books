@@ -147,6 +147,12 @@ export function getShorthand(book: Pick<Book, 'author' | 'title'>): string {
   return [book.author, book.title].filter(Boolean).join(', ')
 }
 
+export function getTitleAndSubtitle(book: Pick<Book, 'title'>) {
+  const [title, ...subtitles] = book.title.split(/\:\s|\?\s|\!\s|\.\s/)
+  const subtitle = subtitles.join(' ')
+  return { title, subtitle }
+}
+
 export function getSuggestedByPeople(
   book: Pick<Book, 'suggestedBy'>
 ): string[] {

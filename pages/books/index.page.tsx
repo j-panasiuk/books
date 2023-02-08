@@ -19,7 +19,7 @@ import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
 import type { Stock } from 'domain/attribute/stock'
 import type { Seller } from 'domain/entity/Seller'
-import type { Book } from 'domain/entity/Book'
+import { type Book, getTitleAndSubtitle } from 'domain/entity/Book'
 import type { BookVolume } from 'domain/entity/BookVolume'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
 import { AppLayout } from 'pages'
@@ -82,7 +82,9 @@ export default function BooksPage() {
           {books?.map((book) => (
             <Tr key={book.id}>
               <Td>{book.author}</Td>
-              <Td fontStyle="italic">{book.title}</Td>
+              <Td>
+                <Title book={book} />
+              </Td>
               <Td>
                 <HStack spacing={1}>
                   {book.volumes.map(({ no }) => (
@@ -141,6 +143,25 @@ export default function BooksPage() {
 
       <BookPanel {...panelControls} {...api} />
     </AppLayout>
+  )
+}
+
+type TitleProps = {
+  book: Book
+}
+
+function Title({ book }: TitleProps) {
+  const { title, subtitle } = getTitleAndSubtitle(book)
+
+  return (
+    <>
+      <Text fontSize="small">{title}</Text>
+      {subtitle ? (
+        <Text fontSize="smaller" fontStyle="italic">
+          {subtitle}
+        </Text>
+      ) : null}
+    </>
   )
 }
 
