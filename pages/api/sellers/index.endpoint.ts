@@ -3,7 +3,7 @@ import type { Seller } from '@prisma/client'
 import { prisma } from 'prisma/client'
 import { type ResponseError } from 'utils/api/response'
 
-export default async function (
+export default async function sellersHandler(
   req: NextApiRequest,
   res: NextApiResponse<Seller[] | ResponseError>
 ) {

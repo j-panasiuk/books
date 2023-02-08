@@ -1,17 +1,20 @@
 import * as s from 'superstruct'
-import type { Seller } from '@prisma/client'
-import type { Book } from 'domain/entity/Book'
 import type { Api, Search, Create, Update, Remove } from 'domain/entity/api'
-import { bookStruct } from 'domain/entity/Book'
-import { sellersStruct } from 'domain/entity/Seller'
+import {
+  type Book,
+  type BookItem,
+  bookStruct,
+  bookItemStruct,
+} from 'domain/entity/Book'
+import { type Seller, sellersStruct } from 'domain/entity/Seller'
 import { request } from 'utils/api/request'
 import { queryClient } from 'pages/queryClient'
 
 // --- QUERIES ---
 
-export const fetchBooks: Search<Book> = async () => {
+export const fetchBooks: Search<BookItem> = async () => {
   const responseData = await request.get('/api/books')
-  s.assert(responseData, s.array(bookStruct))
+  s.assert(responseData, s.array(bookItemStruct))
   return responseData
 }
 

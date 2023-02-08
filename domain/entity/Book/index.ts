@@ -4,23 +4,37 @@ import { nameStruct } from 'domain/attribute/name'
 import { type Serialized, entityStruct } from 'domain/entity'
 import { type BookVolume, bookVolumeStruct } from 'domain/entity/BookVolume'
 
-export type Book = Serialized<DB.Book> & {
-  volumes: BookVolume[]
-}
-
-const author = s.string()
+const author = nameStruct
 const title = nameStruct
-const suggestedBy = s.string()
+const suggestedBy = nameStruct
+
+/**
+ * Book JSON object without any nested fields.
+ */
+export type Book = Serialized<DB.Book>
 
 export const bookStruct = s.assign(
   entityStruct,
   s.type({
     author,
     title,
-    suggestedBy: s.nullable(suggestedBy),
-    volumes: s.array(bookVolumeStruct),
+    suggestedBy,
   })
 ) satisfies s.Describe<Book>
+
+/**
+ * Book JSON object with full related data
+ */
+export type BookItem = Book & {
+  volumes: BookVolume[]
+}
+
+export const bookItemStruct = s.assign(
+  bookStruct,
+  s.type({
+    volumes: s.array(bookVolumeStruct),
+  })
+) satisfies s.Describe<BookItem>
 
 // --- CREATE ---
 
@@ -28,7 +42,7 @@ export const bookCreateInputStruct = s.coerce(
   s.object({
     author,
     title,
-    suggestedBy: s.optional(s.nullable(suggestedBy)),
+    suggestedBy: s.optional(suggestedBy),
     volumes: s.coerce(
       s.optional(
         s.object({
@@ -60,7 +74,7 @@ export const bookCreateInputStruct = s.coerce(
   }),
   s.unknown(),
   function coerceToBookCreateInput(val) {
-    if (s.partial(bookStruct).is(val)) {
+    if (s.partial(bookItemStruct).is(val)) {
       return {
         author: val.author,
         title: val.title,
@@ -78,7 +92,7 @@ export const bookUpdateInputStruct = s.coerce(
   s.object({
     author: s.optional(author),
     title: s.optional(title),
-    suggestedBy: s.optional(s.nullable(suggestedBy)),
+    suggestedBy: s.optional(suggestedBy),
     volumes: s.coerce(
       s.optional(
         s.object({
@@ -108,7 +122,7 @@ export const bookUpdateInputStruct = s.coerce(
   }),
   s.unknown(),
   function coerceToBookUpdateInput(val) {
-    if (s.partial(bookStruct).is(val)) {
+    if (s.partial(bookItemStruct).is(val)) {
       return {
         author: val.author,
         title: val.title,
@@ -123,8 +137,7 @@ export const bookUpdateInputStruct = s.coerce(
 type SimplifiedUpdate<T> = {
   [Property in keyof T]: Exclude<
     T[Property],
-    | DB.Prisma.StringFieldUpdateOperationsInput
-    | DB.Prisma.NullableStringFieldUpdateOperationsInput
+    DB.Prisma.StringFieldUpdateOperationsInput
   >
 }
 

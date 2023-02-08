@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Book } from '@prisma/client'
 import { prisma } from 'prisma/client'
-import { toId } from 'domain/attribute/id'
 import { handleResponseError, type ResponseError } from 'utils/api/response'
+import { toId } from 'domain/attribute/id'
+import { bookUpdateInputStruct } from 'domain/entity/Book'
 
-export default async function (
+export default async function bookHandler(
   req: NextApiRequest,
   res: NextApiResponse<Book | ResponseError>
 ) {
@@ -13,9 +14,10 @@ export default async function (
   switch (req.method) {
     case 'PUT': {
       try {
+        const updateInput = bookUpdateInputStruct.create(req.body)
         const updated = await prisma.book.update({
           where: { id },
-          data: req.body,
+          data: updateInput,
         })
         return res.status(200).json(updated)
       } catch (err) {
