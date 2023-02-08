@@ -16,7 +16,7 @@ model Book {
   updatedAt   DateTime     @updatedAt
   author      String
   title       String
-  suggestedBy String?
+  suggestedBy String       @default("")
   volumes     BookVolume[]
 
   @@unique([author, title])
@@ -26,8 +26,8 @@ model BookVolume {
   no      Int                     @default(1)
   bookId  String
   book    Book                    @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  title   String                  @default("")
   sellers BookVolumeSellerStock[]
-  title   String?
 
   @@id([bookId, no])
 }

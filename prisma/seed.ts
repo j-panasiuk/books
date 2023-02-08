@@ -30,21 +30,15 @@ const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
   let input: Prisma.BookCreateInput = {
     author: book.author.trim(),
     title: book.title.trim(),
-  }
-
-  if (book.created_at) {
-    input.createdAt = book.created_at
-  }
-  if (book.updated_at) {
-    input.updatedAt = book.updated_at
-  }
-  if (book.suggested_by) {
-    input.suggestedBy = book.suggested_by.join(', ').trim()
+    createdAt: book.created_at,
+    updatedAt: book.updated_at ?? undefined,
+    suggestedBy: book.suggested_by?.join(', ').trim() ?? undefined,
   }
 
   input.volumes = {
     create: book.tomes.map((tome, i) => ({
       no: i + 1,
+      title: undefined,
       sellers: {
         create:
           'sellers' in tome
