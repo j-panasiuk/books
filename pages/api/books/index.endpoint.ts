@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Book } from '@prisma/client'
 import { prisma } from 'prisma/client'
 import { handleResponseError, type ResponseError } from 'utils/api/response'
-import { bookCreateInputStruct } from 'domain/entity/Book'
+import { bookCreateInputStruct, bookItemInclude } from 'domain/entity/Book'
 
 export default async function booksHandler(
   req: NextApiRequest,
@@ -11,20 +11,7 @@ export default async function booksHandler(
   switch (req.method) {
     case 'GET': {
       const books = await prisma.book.findMany({
-        include: {
-          volumes: {
-            select: {
-              no: true,
-              title: true,
-              sellers: {
-                select: {
-                  sellerName: true,
-                  stock: true,
-                },
-              },
-            },
-          },
-        },
+        include: bookItemInclude,
       })
       return res.status(200).json(books)
     }

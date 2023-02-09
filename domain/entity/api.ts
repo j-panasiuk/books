@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client'
 import type { Entity } from '.'
 
 export type Search<T extends Entity> = () => Promise<T[]>
+export type Fetch<T extends Entity> = (id: Entity['id']) => Promise<T>
 
 export type Create<T extends Entity> = (
   input: Prisma.InputJsonObject

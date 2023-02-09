@@ -36,6 +36,21 @@ export const bookItemStruct = s.assign(
   })
 ) satisfies s.Describe<BookItem>
 
+export const bookItemInclude: DB.Prisma.BookInclude = {
+  volumes: {
+    select: {
+      no: true,
+      title: true,
+      sellers: {
+        select: {
+          sellerName: true,
+          stock: true,
+        },
+      },
+    },
+  },
+}
+
 // --- CREATE ---
 
 export const bookCreateInputStruct = s.coerce(

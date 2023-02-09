@@ -1,5 +1,12 @@
 import * as s from 'superstruct'
-import type { Api, Search, Create, Update, Remove } from 'domain/entity/api'
+import type {
+  Api,
+  Search,
+  Fetch,
+  Create,
+  Update,
+  Remove,
+} from 'domain/entity/api'
 import {
   type Book,
   type BookItem,
@@ -15,6 +22,12 @@ import { queryClient } from 'pages/queryClient'
 export const fetchBooks: Search<BookItem> = async () => {
   const responseData = await request.get('/api/books')
   s.assert(responseData, s.array(bookItemStruct))
+  return responseData
+}
+
+export const fetchBook: Fetch<BookItem> = async (id) => {
+  const responseData = await request.get(`/api/books/${id}`)
+  s.assert(responseData, bookItemStruct)
   return responseData
 }
 

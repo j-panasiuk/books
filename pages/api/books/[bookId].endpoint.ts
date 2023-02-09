@@ -3,15 +3,28 @@ import type { Book } from '@prisma/client'
 import { prisma } from 'prisma/client'
 import { handleResponseError, type ResponseError } from 'utils/api/response'
 import { toId } from 'domain/attribute/id'
-import { bookUpdateInputStruct } from 'domain/entity/Book'
+import { bookItemInclude, bookUpdateInputStruct } from 'domain/entity/Book'
 
 export default async function bookHandler(
   req: NextApiRequest,
-  res: NextApiResponse<Book | ResponseError>
+  res: NextApiResponse<null | Book | ResponseError>
 ) {
   const id: Book['id'] = toId(req.query.bookId)
 
   switch (req.method) {
+    case 'GET': {
+      try {
+        const book = await prisma.book.findUnique({
+          where: { id },
+          include: bookItemInclude,
+        })
+        return res.status(200).json(book)
+      } catch (err) {
+        const { status, ...responseError } = await handleResponseError(err)
+        return res.status(status).json(responseError)
+      }
+    }
+
     case 'PUT': {
       try {
         const updateInput = bookUpdateInputStruct.create(req.body)
