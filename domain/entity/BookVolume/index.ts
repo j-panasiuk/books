@@ -12,11 +12,33 @@ export type BookVolume = {
   title: string
 }
 
-export const bookVolumeStruct = s.type({
-  no: positiveCountStruct,
-  sellers: s.array(bookVolumeSellerStockStruct),
-  title: nameStruct,
-}) satisfies s.Describe<BookVolume>
+export const bookVolumeStruct = s.coerce(
+  s.type({
+    no: positiveCountStruct,
+    sellers: s.array(bookVolumeSellerStockStruct),
+    title: nameStruct,
+  }),
+  s.unknown(),
+  function coerceToBookVolume(val) {
+    if (positiveCountStruct.is(val)) {
+      return {
+        no: val,
+        sellers: [],
+        title: '',
+      }
+    }
+    return val
+  }
+) satisfies s.Describe<BookVolume>
+
+export const bookVolumesStruct = s.coerce(
+  s.nonempty(s.array(bookVolumeStruct)),
+  s.unknown(),
+  (val) => {
+    if (!(Array.isArray(val) && val[0])) return [bookVolumeStruct.create(1)]
+    return val
+  }
+)
 
 export function canRemoveVolume(
   volume: Pick<BookVolume, 'no'>,

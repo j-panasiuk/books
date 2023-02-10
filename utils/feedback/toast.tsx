@@ -15,6 +15,6 @@ export const toastError: UseToastOptions = {
 
 export function getErrorToastDescription(err: unknown) {
   if (isResponseError(err) || err instanceof Error) {
-    return <pre>{err.message}</pre>
+    return err.name
   }
 }

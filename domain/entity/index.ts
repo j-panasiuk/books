@@ -26,6 +26,8 @@ export const entityStruct = s.type({
   updatedAt: datetimeStruct,
 }) satisfies s.Describe<Entity>
 
+export type Base<T> = Omit<T, keyof Entity>
+
 // Serialize datetime props (Date -> string)
 // Reason: server-side can use js Date objects, but can't send them to client-side
 // Note: this serialization is not recursive, to keep things simple

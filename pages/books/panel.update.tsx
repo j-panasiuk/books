@@ -1,24 +1,59 @@
+import * as s from 'superstruct'
 import { useState } from 'react'
 import {
   Button,
   ButtonGroup,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
+  GridItem,
   Input,
   SimpleGrid,
   useToast,
 } from '@chakra-ui/react'
-import type { Prisma } from '@prisma/client'
-import type { Book } from 'domain/entity/Book'
 import type { PanelUpdateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
+import { Form } from 'components/Form'
+import { createResponseFormValidator } from 'utils/api/response'
 import {
   getErrorToastDescription,
   toastError,
   toastSuccess,
 } from 'utils/feedback/toast'
-import { getShorthand } from 'domain/entity/Book'
+import {
+  type Book,
+  getShorthand,
+  bookUpdateInputStruct,
+  BookUpdateInput,
+} from 'domain/entity/Book'
+import { bookVolumeStruct, canRemoveVolume } from 'domain/entity/BookVolume'
+import {
+  BookVolumeCard,
+  BookVolumeCardAdd,
+} from 'domain/entity/BookVolume/Cards'
+
+// --- FORM VALUES ---
+
+type BookUpdateFormValues = s.Infer<typeof bookUpdateInputStruct>
+const formStruct = bookUpdateInputStruct satisfies s.Describe<BookUpdateInput>
+
+// --- FORM ERRORS ---
+
+type FormErrors = s.Infer<typeof formErrorsStruct>
+
+const formErrorsStruct = s.partial(
+  s.object({
+    author: s.string(),
+    title: s.string(),
+    suggestedBy: s.string(),
+    volumes: s.string(),
+  })
+)
+
+const getFormErrors = createResponseFormValidator(formErrorsStruct)
+
+// --- PANEL ---
 
 export function BookPanelUpdate({
   initialValue,
@@ -28,20 +63,14 @@ export function BookPanelUpdate({
   remove,
 }: PanelUpdateProps<Book>) {
   const toast = useToast()
-  const [bookInput, setBookInput] = useState<Prisma.BookUpdateInput>({
-    author: initialValue.author,
-    title: initialValue.title,
-    suggestedBy: initialValue.suggestedBy,
-  })
+  const [formValues, setFormValues] = useState<BookUpdateFormValues>(
+    formStruct.create(initialValue)
+  )
+  const [formErrors, setFormErrors] = useState<FormErrors>({})
 
   const onSave = async (): Promise<Book> => {
     try {
-      const { author, title, suggestedBy } = bookInput
-      const updated = await update(initialValue.id, {
-        author,
-        title,
-        suggestedBy,
-      })
+      const updated = await update(initialValue.id, formValues)
       toast({
         ...toastSuccess,
         title: 'Updated book',
@@ -49,11 +78,16 @@ export function BookPanelUpdate({
       })
       return updated
     } catch (err) {
-      toast({
-        ...toastError,
-        title: 'Failed to update book',
-        description: getErrorToastDescription(err),
-      })
+      const errors = getFormErrors(err)
+      if (errors) {
+        setFormErrors(errors)
+      } else {
+        toast({
+          ...toastError,
+          title: 'Failed to update book',
+          description: getErrorToastDescription(err),
+        })
+      }
       return Promise.reject(err)
     }
   }
@@ -101,56 +135,131 @@ export function BookPanelUpdate({
           <Button onClick={copyAsNewDraft} variant="outline">
             Copy as new draft
           </Button>
-          <Button onClick={saveAndClose}>Save</Button>
+          <Button type="submit" form={Form.id}>
+            Save
+          </Button>
         </ButtonGroup>
       }
     >
       <SimpleGrid columns={3} gridGap={2}>
-        <FormControl>
-          <FormLabel htmlFor="author">Author</FormLabel>
-          <Input
-            id="author"
-            type="text"
-            defaultValue={initialValue.author}
-            onChange={(ev) => {
-              setBookInput((input): Prisma.BookUpdateInput => {
-                return { ...input, author: ev.target.value }
-              })
-            }}
-          />
-        </FormControl>
+        <Form
+          onSubmit={(ev) => {
+            ev.preventDefault()
+            saveAndClose()
+          }}
+        >
+          <FormControl isInvalid={Boolean(formErrors.author)}>
+            <FormLabel htmlFor="author">Author</FormLabel>
+            <Input
+              id="author"
+              type="text"
+              value={formValues.author}
+              onChange={(ev) => {
+                setFormValues((values): BookUpdateFormValues => {
+                  return { ...values, author: ev.target.value }
+                })
+                if (formErrors.author) {
+                  setFormErrors(({ author, ...rest }) => rest)
+                }
+              }}
+            />
+            {formErrors.author ? (
+              <FormErrorMessage>{formErrors.author}</FormErrorMessage>
+            ) : null}
+          </FormControl>
 
-        <FormControl isRequired>
-          <FormLabel htmlFor="title">Title</FormLabel>
-          <Input
-            id="title"
-            type="text"
-            defaultValue={initialValue.title}
-            onChange={(ev) => {
-              setBookInput((input): Prisma.BookUpdateInput => {
-                return { ...input, title: ev.target.value }
-              })
-            }}
-          />
-        </FormControl>
+          <FormControl isRequired isInvalid={Boolean(formErrors.title)}>
+            <FormLabel htmlFor="title">Title</FormLabel>
+            <Input
+              id="title"
+              type="text"
+              value={formValues.title}
+              onChange={(ev) => {
+                setFormValues((values): BookUpdateFormValues => {
+                  return { ...values, title: ev.target.value }
+                })
+                if (formErrors.title) {
+                  setFormErrors(({ author, ...rest }) => rest)
+                }
+              }}
+            />
+            {formErrors.title ? (
+              <FormErrorMessage>{formErrors.title}</FormErrorMessage>
+            ) : null}
+          </FormControl>
 
-        <FormControl>
-          <FormLabel htmlFor="suggested_by">Suggested by</FormLabel>
-          <Input
-            id="suggested_by"
-            type="text"
-            defaultValue={initialValue.suggestedBy ?? ''}
-            onChange={(ev) => {
-              setBookInput((input): Prisma.BookUpdateInput => {
-                const persons = ev.target.value.split(', ').filter(Boolean)
-                const suggestedBy = persons.length
-                  ? persons.join(', ')
+          <FormControl isInvalid={Boolean(formErrors.suggestedBy)}>
+            <FormLabel htmlFor="suggested_by">Suggested by</FormLabel>
+            <Input
+              id="suggested_by"
+              type="text"
+              value={formValues.suggestedBy}
+              onChange={(ev) => {
+                setFormValues((values): BookUpdateFormValues => {
+                  return { ...values, suggestedBy: ev.target.value }
+                })
+                if (formErrors.suggestedBy) {
+                  setFormErrors(({ author, ...rest }) => rest)
+                }
+              }}
+            />
+            {formErrors.suggestedBy ? (
+              <FormErrorMessage>{formErrors.suggestedBy}</FormErrorMessage>
+            ) : null}
+          </FormControl>
+
+          <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
+            <FormLabel>Volumes</FormLabel>
+          </GridItem>
+
+          {formValues.volumes.map((vol) => (
+            <BookVolumeCard
+              key={vol.no}
+              volume={vol}
+              updateVolume={(v) => {
+                setFormValues((values): BookUpdateFormValues => {
+                  console.log('updating vol', vol)
+                  return {
+                    ...values,
+                    volumes: values.volumes.map((_v) =>
+                      _v.no === v.no ? { ..._v, ...v } : _v
+                    ),
+                  }
+                })
+              }}
+              removeVolume={
+                canRemoveVolume(vol, formValues.volumes || [])
+                  ? () => {
+                      setFormValues((values): BookUpdateFormValues => {
+                        console.log('removing vol', vol)
+                        return {
+                          ...values,
+                          volumes: values.volumes.filter(
+                            (v) => v.no !== vol.no
+                          ),
+                        }
+                      })
+                    }
                   : undefined
-                return { ...input, suggestedBy }
+              }
+            />
+          ))}
+
+          <BookVolumeCardAdd
+            onClick={() => {
+              setFormValues((values): BookUpdateFormValues => {
+                const volumes = values.volumes || []
+                const nextNo = volumes.length + 1
+                const nextVolume = bookVolumeStruct.create(nextNo)
+                console.log('adding vol', nextVolume)
+                return {
+                  ...values,
+                  volumes: volumes.concat(nextVolume),
+                }
               })
             }}
           />
-        </FormControl>
+        </Form>
       </SimpleGrid>
     </PanelContent>
   )

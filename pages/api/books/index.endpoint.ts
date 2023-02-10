@@ -18,9 +18,19 @@ export default async function booksHandler(
 
     case 'POST': {
       try {
-        const createInput = bookCreateInputStruct.create(req.body)
+        const { volumes, ...bookInput } = bookCreateInputStruct.create(req.body)
         const created = await prisma.book.create({
-          data: createInput,
+          data: {
+            ...bookInput,
+            volumes: {
+              create: volumes.map(({ sellers, ...vol }) => ({
+                ...vol,
+                sellers: {
+                  create: [],
+                },
+              })),
+            },
+          },
         })
         return res.status(201).json(created)
       } catch (err) {

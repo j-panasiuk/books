@@ -1,12 +1,14 @@
 import type * as DB from '@prisma/client'
 import * as s from 'superstruct'
 import { nameStruct } from 'domain/attribute/name'
-import { type Serialized, entityStruct } from 'domain/entity'
-import { type BookVolume, bookVolumeStruct } from 'domain/entity/BookVolume'
+import { type Serialized, type Base, entityStruct } from 'domain/entity'
+import { type BookVolume, bookVolumesStruct } from 'domain/entity/BookVolume'
+import { pick } from 'utils/pick'
 
 const author = nameStruct
-const title = nameStruct
+const title = s.nonempty(nameStruct)
 const suggestedBy = nameStruct
+const volumes = bookVolumesStruct
 
 /**
  * Book JSON object without any nested fields.
@@ -32,7 +34,7 @@ export type BookItem = Book & {
 export const bookItemStruct = s.assign(
   bookStruct,
   s.type({
-    volumes: s.array(bookVolumeStruct),
+    volumes,
   })
 ) satisfies s.Describe<BookItem>
 
@@ -51,110 +53,46 @@ export const bookItemInclude: DB.Prisma.BookInclude = {
   },
 }
 
+// --- CREATE & UPDATE ---
+
+function coerceBookInput(val: unknown): {} {
+  console.log('book: coercing...', val)
+  if (!val) {
+    return {}
+  }
+  if (s.partial(bookItemStruct).is(val)) {
+    return pick(val, ['author', 'title', 'suggestedBy', 'volumes'])
+  }
+  return val
+}
+
 // --- CREATE ---
 
+export type BookCreateInput = s.Infer<typeof bookCreateInputStruct>
 export const bookCreateInputStruct = s.coerce(
   s.object({
     author,
-    title,
-    suggestedBy: s.optional(suggestedBy),
-    volumes: s.coerce(
-      s.optional(
-        s.object({
-          // Using `any` type for simplicity
-          // Exactly typed nested definition doesn't want to compile
-          // Looks like Prisma vs Superstruct typings mismatch
-          create: s.any(),
-        })
-      ),
-      s.unknown(),
-      function coerceToBookCreateInputVolumes(val) {
-        if (s.array(s.partial(bookVolumeStruct)).is(val)) {
-          return {
-            create: val.map((v, i) => ({
-              no: v.no ?? i + 1,
-              title: v.title,
-              sellers: {
-                create: v.sellers || [],
-              },
-            })),
-          }
-        }
-        console.log('bookCreateInputStruct: coerce unexpected "volumes"', val)
-        return {
-          create: [{ no: 1, sellers: { create: [] } }],
-        }
-      }
-    ),
+    title: nameStruct,
+    suggestedBy,
+    volumes,
   }),
   s.unknown(),
-  function coerceToBookCreateInput(val) {
-    if (s.partial(bookItemStruct).is(val)) {
-      return {
-        author: val.author,
-        title: val.title,
-        suggestedBy: val.suggestedBy,
-        volumes: val.volumes,
-      }
-    }
-    return val
-  }
-) satisfies s.Describe<DB.Prisma.BookCreateInput>
+  coerceBookInput
+) satisfies s.Describe<Base<BookItem>>
 
 // --- UPDATE ---
 
+export type BookUpdateInput = s.Infer<typeof bookUpdateInputStruct>
 export const bookUpdateInputStruct = s.coerce(
   s.object({
-    author: s.optional(author),
-    title: s.optional(title),
-    suggestedBy: s.optional(suggestedBy),
-    volumes: s.coerce(
-      s.optional(
-        s.object({
-          // Using `any` type for simplicity
-          // Exactly typed nested definition doesn't want to compile
-          // Looks like Prisma vs Superstruct typings mismatch
-          upsert: s.any(),
-        })
-      ),
-      s.unknown(),
-      function coerceToBookInputUpdateVolumes(val) {
-        if (s.array(s.partial(bookVolumeStruct)).is(val)) {
-          return {
-            upsert: val.map((v, i) => ({
-              no: v.no ?? i + 1,
-              title: v.title,
-              sellers: {
-                upsert: v.sellers || [],
-              },
-            })),
-          }
-        }
-        console.log('bookUpdateInputStruct: coerce unexpected "volumes"', val)
-        return val
-      }
-    ),
+    author,
+    title,
+    suggestedBy,
+    volumes,
   }),
   s.unknown(),
-  function coerceToBookUpdateInput(val) {
-    if (s.partial(bookItemStruct).is(val)) {
-      return {
-        author: val.author,
-        title: val.title,
-        suggestedBy: val.suggestedBy,
-        volumes: val.volumes,
-      }
-    }
-    return val
-  }
-) satisfies s.Describe<SimplifiedUpdate<DB.Prisma.BookUpdateInput>>
-
-type SimplifiedUpdate<T> = {
-  [Property in keyof T]: Exclude<
-    T[Property],
-    DB.Prisma.StringFieldUpdateOperationsInput
-  >
-}
+  coerceBookInput
+) satisfies s.Describe<Base<BookItem>>
 
 // --- HELPERS ---
 
