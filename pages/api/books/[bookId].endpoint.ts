@@ -6,6 +6,7 @@ import { idStruct } from 'domain/attribute/id'
 import { bookItemInclude, bookUpdateInputStruct } from 'domain/entity/Book'
 import { range } from 'utils/range'
 import { omit } from 'utils/omit'
+import { log } from 'utils/log'
 
 export default async function bookHandler(
   req: NextApiRequest,
@@ -31,6 +32,7 @@ export default async function bookHandler(
       try {
         const bookInput = bookUpdateInputStruct.create(req.body)
 
+        log.info('tx: starting transaction...')
         const updated = await prisma.$transaction(async (tx) => {
           const { volumes, ...data } = bookInput
 
@@ -59,13 +61,13 @@ export default async function bookHandler(
                   // sellers: incoming.sellers, // TODO update volume sellers
                 },
               })
-              console.log('tx: updated volume', no)
+              log.info('tx: updated volume', no)
             } else if (existing) {
               // remove volume
               await tx.bookVolume.delete({
                 where: { bookId_no: { bookId: id, no } },
               })
-              console.log('tx: deleted volume', no)
+              log.info('tx: deleted volume', no)
             } else if (incoming) {
               // add volume
               const { sellers, ...bookVolumeInput } = incoming
@@ -78,9 +80,10 @@ export default async function bookHandler(
                   },
                 },
               })
-              console.log('tx: created volume', no)
+              log.info('tx: created volume', no)
             }
           }
+          log.success('tx: successful')
 
           return omit(book, ['volumes']) as Book
         })

@@ -1,5 +1,6 @@
 import * as s from 'superstruct'
 import { Prisma } from '@prisma/client'
+import { log } from 'utils/log'
 
 export type ResponseError = {
   message: string
@@ -24,7 +25,8 @@ interface ResponseErrorWithStatus extends ResponseError {
 export async function handleResponseError(
   err: unknown
 ): Promise<ResponseErrorWithStatus> {
-  console.log('handleResponseError', err)
+  log.error('handleResponseError', err)
+
   if (err instanceof Error) {
     // Handle known error types
     if (err instanceof s.StructError) {
@@ -97,6 +99,8 @@ export function createResponseFormValidator<T, S extends object>(
   }
 
   return function getResponseFormErrors(err: unknown) {
+    log.error('getResponseFormErrors', err)
+
     if (isValidationError(err)) {
       const validationFailures = err.failures.filter(isValidationFailure)
 

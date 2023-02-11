@@ -2,6 +2,7 @@
 // @see https://www.prisma.io/docs/guides/database/seed-database
 
 import type { Prisma } from '@prisma/client'
+import { log } from 'utils/log'
 import { prisma } from './client'
 import books from './books.json'
 
@@ -56,21 +57,21 @@ const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
 
 async function seed() {
   // Cleanup existing database
-  console.log('seed: cleaning up existing records...')
+  log.info('seed', 'cleaning up existing records...')
   await prisma.seller.deleteMany({})
   await prisma.book.deleteMany({})
 
-  console.log('seed: importing sellers from json file...')
+  log.info('seed', 'importing sellers from json file...')
   for (const data of seedSellers) {
     await prisma.seller.create({ data })
   }
 
-  console.log('seed: importing books from json file...')
+  log.info('seed', 'importing books from json file...')
   for (const data of seedBooks) {
     await prisma.book.create({ data })
   }
 
-  console.log('seed: done.')
+  log.success('seed', 'done')
 }
 
 seed()

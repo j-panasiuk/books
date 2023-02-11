@@ -191,7 +191,6 @@ export function BookPanelCreate({
               volume={vol}
               updateVolume={(v) => {
                 setFormValues((values): BookCreateFormValues => {
-                  console.log('updating vol', vol)
                   return {
                     ...values,
                     volumes: values.volumes.map((_v) =>
@@ -204,7 +203,6 @@ export function BookPanelCreate({
                 canRemoveVolume(vol, formValues.volumes)
                   ? () => {
                       setFormValues((values): BookCreateFormValues => {
-                        console.log('removing vol', vol)
                         return {
                           ...values,
                           volumes: values.volumes.filter(
@@ -223,7 +221,6 @@ export function BookPanelCreate({
               setFormValues((values): BookCreateFormValues => {
                 const nextNo = values.volumes.length + 1
                 const nextVolume = bookVolumeStruct.create(nextNo)
-                console.log('adding vol', nextVolume)
                 return {
                   ...values,
                   volumes: values.volumes.concat(nextVolume),

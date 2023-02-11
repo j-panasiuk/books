@@ -56,7 +56,6 @@ export const bookItemInclude: DB.Prisma.BookInclude = {
 // --- CREATE & UPDATE ---
 
 function coerceBookInput(val: unknown): {} {
-  console.log('book: coercing...', val)
   if (!val) {
     return {}
   }
