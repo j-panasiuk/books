@@ -13,7 +13,7 @@ import {
   bookStruct,
   bookItemStruct,
 } from 'domain/entity/Book'
-import { type Seller, sellersStruct } from 'domain/entity/Seller'
+import { type Seller, sellerStruct } from 'domain/entity/Seller'
 import { request } from 'utils/api/request'
 import { queryClient } from 'pages/queryClient'
 
@@ -33,7 +33,7 @@ export const fetchBook: Fetch<BookItem> = async (id) => {
 
 export const fetchSellers = async (): Promise<Seller[]> => {
   const responseData = await request.get('/api/sellers')
-  s.assert(responseData, sellersStruct)
+  s.assert(responseData, s.array(sellerStruct))
   return responseData
 }
 

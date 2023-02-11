@@ -2,23 +2,28 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Book } from '@prisma/client'
 import { prisma } from 'prisma/client'
 import { handleResponseError, type ResponseError } from 'utils/api/response'
+import { log } from 'utils/log'
+import { omit } from 'utils/omit'
+import { partitionByOperation } from 'utils/partition'
 import { idStruct } from 'domain/attribute/id'
 import { bookItemInclude, bookUpdateInputStruct } from 'domain/entity/Book'
-import { range } from 'utils/range'
-import { omit } from 'utils/omit'
-import { log } from 'utils/log'
+import {
+  type BookVolumeSellerStock,
+  bookVolumeSellerStockStruct,
+} from 'domain/entity/BookVolumeSellerStock'
+import { type BookVolume, bookVolumeStruct } from 'domain/entity/BookVolume'
 
 export default async function bookHandler(
   req: NextApiRequest,
   res: NextApiResponse<null | Book | ResponseError>
 ) {
-  const id: Book['id'] = idStruct.create(req.query.bookId)
+  const bookId: Book['id'] = idStruct.create(req.query.bookId)
 
   switch (req.method) {
     case 'GET': {
       try {
         const book = await prisma.book.findUnique({
-          where: { id },
+          where: { id: bookId },
           include: bookItemInclude,
         })
         return res.status(200).json(book)
@@ -34,53 +39,102 @@ export default async function bookHandler(
 
         log.info('tx: starting transaction...')
         const updated = await prisma.$transaction(async (tx) => {
-          const { volumes, ...data } = bookInput
-
           const book = await tx.book.update({
-            where: { id },
-            data,
+            where: { id: bookId },
+            data: omit(bookInput, ['volumes']),
             include: { volumes: { include: { sellers: true } } },
           })
 
-          const existingVolumes = book.volumes
-          const incomingVolumes = volumes
-          const totalVolumesRange = range(
-            Math.max(existingVolumes.length, incomingVolumes.length)
+          const volumes = partitionByOperation<BookVolume>(
+            book.volumes.map((exs) => bookVolumeStruct.create(exs)),
+            bookInput.volumes,
+            (exs, inc) => exs.no === inc.no
           )
 
-          for (const i of totalVolumesRange) {
-            let no = i + 1
-            let existing = existingVolumes[i]
-            let incoming = incomingVolumes[i]
-            if (existing && incoming) {
-              // edit volume
-              await tx.bookVolume.update({
-                where: { bookId_no: { bookId: id, no } },
-                data: {
-                  title: incoming.title,
-                  // sellers: incoming.sellers, // TODO update volume sellers
+          // -> delete volume
+          for (const { no } of volumes.toDelete) {
+            await tx.bookVolume.delete({
+              where: { bookId_no: { bookId, no } },
+            })
+            log.info('tx: deleted volume', no)
+          }
+
+          // -> create volume
+          for (const { no, title, sellers } of volumes.toCreate) {
+            await tx.bookVolume.create({
+              data: {
+                bookId,
+                no,
+                title,
+                sellers: {
+                  create: sellers,
                 },
-              })
-              log.info('tx: updated volume', no)
-            } else if (existing) {
-              // remove volume
-              await tx.bookVolume.delete({
-                where: { bookId_no: { bookId: id, no } },
-              })
-              log.info('tx: deleted volume', no)
-            } else if (incoming) {
-              // add volume
-              const { sellers, ...bookVolumeInput } = incoming
-              await tx.bookVolume.create({
-                data: {
-                  bookId: id,
-                  ...bookVolumeInput,
-                  sellers: {
-                    create: sellers,
+              },
+            })
+            log.info('tx: created volume', no)
+          }
+
+          // -> update volume
+          for (const { no, title, sellers } of volumes.toUpdate) {
+            await tx.bookVolume.update({
+              where: { bookId_no: { bookId, no } },
+              data: {
+                title,
+              },
+            })
+            log.info('tx: updated volume', no)
+
+            const volume = book.volumes.find((v) => v.no === no)!
+            const volumeSellers = partitionByOperation<BookVolumeSellerStock>(
+              volume.sellers.map((exs) =>
+                bookVolumeSellerStockStruct.create(exs)
+              ),
+              sellers,
+              (exs, inc) => exs.sellerName === inc.sellerName
+            )
+
+            // -> delete volume seller
+            for (const { sellerName } of volumeSellers.toDelete) {
+              await tx.bookVolumeSellerStock.delete({
+                where: {
+                  bookId_volumeNo_sellerName: {
+                    bookId,
+                    volumeNo: no,
+                    sellerName,
                   },
                 },
               })
-              log.info('tx: created volume', no)
+              log.info('tx: deleted volume seller stock', no, sellerName)
+            }
+
+            // -> create volume seller
+            for (const { sellerName, stock } of volumeSellers.toCreate) {
+              await tx.bookVolumeSellerStock.create({
+                data: {
+                  bookId,
+                  volumeNo: no,
+                  sellerName,
+                  stock,
+                },
+              })
+              log.info('tx: created volume seller stock', no, sellerName, stock)
+            }
+
+            // -> update volume seller
+            for (const { sellerName, stock } of volumeSellers.toUpdate) {
+              await tx.bookVolumeSellerStock.update({
+                where: {
+                  bookId_volumeNo_sellerName: {
+                    bookId,
+                    volumeNo: no,
+                    sellerName,
+                  },
+                },
+                data: {
+                  stock,
+                },
+              })
+              log.info('tx: updated volume seller stock', no, sellerName, stock)
             }
           }
           log.success('tx: successful')
@@ -97,7 +151,7 @@ export default async function bookHandler(
     case 'DELETE': {
       try {
         const deleted = await prisma.book.delete({
-          where: { id },
+          where: { id: bookId },
         })
         return res.status(200).json(deleted)
       } catch (err) {

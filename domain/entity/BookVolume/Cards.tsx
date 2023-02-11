@@ -88,7 +88,8 @@ export function BookVolumeCard({
 
       {sellers?.map(({ name, icon }) => {
         const key = `seller.${name}`
-        const stock = volume.sellers.find((s) => s.sellerName === name)?.stock
+        const seller = volume.sellers.find((s) => s.sellerName === name)
+        const stock = seller?.stock
 
         return (
           <Labelled
@@ -110,9 +111,14 @@ export function BookVolumeCard({
                 updateVolume({
                   ...volume,
                   sellers: stock
-                    ? volume.sellers.map((s) =>
-                        s.sellerName === name ? { ...s, stock } : s
-                      )
+                    ? seller
+                      ? volume.sellers.map((s) =>
+                          s.sellerName === name ? { ...s, stock } : s
+                        )
+                      : volume.sellers.concat({
+                          sellerName: name,
+                          stock,
+                        })
                     : volume.sellers.filter((s) => s.sellerName !== name),
                 })
               }}
