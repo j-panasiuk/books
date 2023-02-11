@@ -8,7 +8,11 @@ import {
   Input,
   SimpleGrid,
 } from '@chakra-ui/react'
+import type { Seller } from '@prisma/client'
+import { Labelled } from 'components/Labelled'
 import type { BookVolume } from 'domain/entity/BookVolume'
+import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
+import { SellerStockSelect } from 'domain/entity/BookVolumeSellerStock/select'
 
 export function BookVolumeCardAdd(
   props: Required<Pick<ButtonProps, 'onClick'>>
@@ -33,9 +37,15 @@ type Props = {
   volume: BookVolume
   updateVolume: (vol: BookVolume) => void
   removeVolume?: () => void
+  sellers?: Seller[]
 }
 
-export function BookVolumeCard({ volume, updateVolume, removeVolume }: Props) {
+export function BookVolumeCard({
+  volume,
+  updateVolume,
+  removeVolume,
+  sellers,
+}: Props) {
   return (
     <SimpleGrid
       columns={2}
@@ -73,6 +83,43 @@ export function BookVolumeCard({ volume, updateVolume, removeVolume }: Props) {
           }}
         />
       </GridItem>
+
+      <HLine />
+
+      {sellers?.map(({ name, icon }) => {
+        const key = `seller.${name}`
+        const stock = volume.sellers.find((s) => s.sellerName === name)?.stock
+
+        return (
+          <Labelled
+            key={key}
+            htmlFor={key}
+            label={name}
+            icon={
+              <SellerStockIcon
+                sellerName={name}
+                sellerIcon={icon}
+                stock={stock}
+              />
+            }
+          >
+            <SellerStockSelect
+              id={key}
+              value={stock}
+              onSelect={(stock) => {
+                updateVolume({
+                  ...volume,
+                  sellers: stock
+                    ? volume.sellers.map((s) =>
+                        s.sellerName === name ? { ...s, stock } : s
+                      )
+                    : volume.sellers.filter((s) => s.sellerName !== name),
+                })
+              }}
+            />
+          </Labelled>
+        )
+      })}
     </SimpleGrid>
   )
 }

@@ -32,6 +32,7 @@ import {
   BookVolumeCard,
   BookVolumeCardAdd,
 } from 'domain/entity/BookVolume/Cards'
+import { useSellers } from '.'
 
 // --- FORM VALUES ---
 
@@ -67,6 +68,7 @@ export function BookPanelUpdate({
     formStruct.create(initialValue)
   )
   const [formErrors, setFormErrors] = useState<FormErrors>({})
+  const sellers = useSellers()
 
   const onSave = async (): Promise<Book> => {
     try {
@@ -240,6 +242,7 @@ export function BookPanelUpdate({
                     }
                   : undefined
               }
+              sellers={sellers}
             />
           ))}
 
