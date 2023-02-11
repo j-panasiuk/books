@@ -2,7 +2,6 @@
 // @see https://www.prisma.io/docs/guides/database/seed-database
 
 import type { Prisma } from '@prisma/client'
-import { log } from 'utils/log'
 import { prisma } from './client'
 import books from './books.json'
 
@@ -37,19 +36,32 @@ const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
   }
 
   input.volumes = {
-    create: book.tomes.map((tome, i) => ({
-      no: i + 1,
-      title: undefined,
-      sellers: {
-        create:
-          'sellers' in tome
-            ? Object.entries(tome.sellers || {}).map(([k, v]) => ({
-                sellerName: k,
-                stock: v,
-              }))
-            : [],
-      },
-    })),
+    create: book.tomes.map((tome, i) => {
+      return {
+        no: i + 1,
+        title: undefined,
+        copies: {
+          create:
+            'copies' in tome
+              ? (tome.copies || []).map((copy, i) => ({
+                  copyNo: i + 1,
+                  ownership: copy.ownership,
+                  from: 'from' in copy ? copy.from : '',
+                  to: 'to' in copy ? copy.to : '',
+                }))
+              : [],
+        },
+        sellers: {
+          create:
+            'sellers' in tome
+              ? Object.entries(tome.sellers || {}).map(([k, v]) => ({
+                  sellerName: k,
+                  stock: v,
+                }))
+              : [],
+        },
+      }
+    }),
   }
 
   return input
@@ -57,21 +69,21 @@ const seedBooks: Prisma.BookCreateInput[] = books.map((book) => {
 
 async function seed() {
   // Cleanup existing database
-  log.info('seed', 'cleaning up existing records...')
+  console.log('› seed: cleaning up existing records...')
   await prisma.seller.deleteMany({})
   await prisma.book.deleteMany({})
 
-  log.info('seed', 'importing sellers from json file...')
+  console.log('› seed: importing sellers from json file...')
   for (const data of seedSellers) {
     await prisma.seller.create({ data })
   }
 
-  log.info('seed', 'importing books from json file...')
+  console.log('› seed: importing books from json file...')
   for (const data of seedBooks) {
     await prisma.book.create({ data })
   }
 
-  log.success('seed', 'done')
+  console.log('✓ seed: done')
 }
 
 seed()

@@ -27,9 +27,22 @@ model BookVolume {
   bookId  String
   book    Book                    @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   title   String                  @default("")
+  copies  BookVolumeCopy[]
   sellers BookVolumeSellerStock[]
 
   @@id([bookId, no])
+}
+
+model BookVolumeCopy {
+  bookId    String
+  volumeNo  Int
+  copyNo    Int        @default(1)
+  ownership String
+  from      String
+  to        String
+  volume    BookVolume @relation(fields: [bookId, volumeNo], references: [bookId, no], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([bookId, volumeNo, copyNo])
 }
 
 model BookVolumeSellerStock {

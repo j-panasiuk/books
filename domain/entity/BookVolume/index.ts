@@ -2,29 +2,36 @@ import * as s from 'superstruct'
 import { nameStruct } from 'domain/attribute/name'
 import { positiveCountStruct } from 'domain/attribute/count'
 import {
+  bookVolumeCopyStruct,
+  type BookVolumeCopy,
+} from 'domain/entity/BookVolumeCopy'
+import {
   bookVolumeSellerStockStruct,
   type BookVolumeSellerStock,
 } from 'domain/entity/BookVolumeSellerStock'
 
 export type BookVolume = {
   no: number
-  sellers: BookVolumeSellerStock[]
   title: string
+  copies: BookVolumeCopy[]
+  sellers: BookVolumeSellerStock[]
 }
 
 export const bookVolumeStruct = s.coerce(
   s.type({
     no: positiveCountStruct,
-    sellers: s.array(bookVolumeSellerStockStruct),
     title: nameStruct,
+    copies: s.array(bookVolumeCopyStruct),
+    sellers: s.array(bookVolumeSellerStockStruct),
   }),
   s.unknown(),
   function coerceToBookVolume(val) {
     if (positiveCountStruct.is(val)) {
       return {
         no: val,
-        sellers: [],
         title: '',
+        copies: [],
+        sellers: [],
       }
     }
     return val

@@ -43,6 +43,13 @@ export const bookItemInclude: DB.Prisma.BookInclude = {
     select: {
       no: true,
       title: true,
+      copies: {
+        select: {
+          ownership: true,
+          from: true,
+          to: true,
+        },
+      },
       sellers: {
         select: {
           sellerName: true,
