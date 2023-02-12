@@ -13,8 +13,7 @@ const volumes = bookVolumesStruct
 /**
  * Book JSON object without any nested fields.
  */
-export type Book = Serialized<DB.Book>
-
+export type Book = s.Infer<typeof bookStruct>
 export const bookStruct = s.assign(
   entityStruct,
   s.type({
@@ -22,21 +21,18 @@ export const bookStruct = s.assign(
     title,
     suggestedBy,
   })
-) satisfies s.Describe<Book>
+) satisfies s.Describe<Serialized<DB.Book>>
 
 /**
  * Book JSON object with full related data
  */
-export type BookItem = Book & {
-  volumes: BookVolume[]
-}
-
+export type BookItem = s.Infer<typeof bookItemStruct>
 export const bookItemStruct = s.assign(
   bookStruct,
   s.type({
     volumes,
   })
-) satisfies s.Describe<BookItem>
+) satisfies s.Describe<Serialized<DB.Book> & { volumes: BookVolume[] }>
 
 export const bookItemInclude: DB.Prisma.BookInclude = {
   volumes: {

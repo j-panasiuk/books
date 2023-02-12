@@ -1,3 +1,4 @@
+import type * as DB from '@prisma/client'
 import * as s from 'superstruct'
 import { nameStruct } from 'domain/attribute/name'
 import { positiveCountStruct } from 'domain/attribute/count'
@@ -10,13 +11,7 @@ import {
   type BookVolumeSellerStock,
 } from 'domain/entity/BookVolumeSellerStock'
 
-export type BookVolume = {
-  no: number
-  title: string
-  copies: BookVolumeCopy[]
-  sellers: BookVolumeSellerStock[]
-}
-
+export type BookVolume = s.Infer<typeof bookVolumeStruct>
 export const bookVolumeStruct = s.coerce(
   s.type({
     no: positiveCountStruct,
@@ -36,7 +31,12 @@ export const bookVolumeStruct = s.coerce(
     }
     return val
   }
-) satisfies s.Describe<BookVolume>
+) satisfies s.Describe<
+  Pick<DB.BookVolume, 'no' | 'title'> & {
+    copies: BookVolumeCopy[]
+    sellers: BookVolumeSellerStock[]
+  }
+>
 
 export const bookVolumesStruct = s.coerce(
   s.nonempty(s.array(bookVolumeStruct)),
