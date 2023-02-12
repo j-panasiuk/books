@@ -71,8 +71,8 @@ export default function BooksPage() {
         <Thead>
           <Tr>
             <Th>Author</Th>
-            <Th>Title</Th>
             <Th>Volumes</Th>
+            <Th>Title</Th>
             <Th>Suggested By</Th>
             <Th>Sellers</Th>
             <Th>Actions</Th>
@@ -83,10 +83,7 @@ export default function BooksPage() {
             <Tr key={book.id}>
               <Td>{book.author}</Td>
               <Td>
-                <Title book={book} />
-              </Td>
-              <Td>
-                <HStack spacing={1}>
+                <HStack spacing={1} justifyContent="flex-end">
                   {book.volumes.map(({ no }) => (
                     <Box key={no} p={1} border="1px" borderColor="gray.300">
                       <Text fontSize="sm" fontWeight="bold" color="gray.300">
@@ -95,6 +92,9 @@ export default function BooksPage() {
                     </Box>
                   ))}
                 </HStack>
+              </Td>
+              <Td>
+                <Title book={book} />
               </Td>
               <Td>{book.suggestedBy}</Td>
               <Td>
