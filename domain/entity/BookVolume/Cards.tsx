@@ -1,5 +1,4 @@
 import {
-  Button,
   type ButtonProps,
   CloseButton,
   Divider,
@@ -9,28 +8,24 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react'
 import type { Seller } from '@prisma/client'
+import { AddButton } from 'components/AddButton'
 import { Labelled } from 'components/Labelled'
 import { Select } from 'components/Select'
 import { stockOptions } from 'domain/attribute/stock'
 import type { BookVolume } from 'domain/entity/BookVolume'
+import {
+  BookVolumeCopyItem,
+  BookVolumeCopyItemAdd,
+} from 'domain/entity/BookVolumeCopy/Item'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
 
 export function BookVolumeCardAdd(
   props: Required<Pick<ButtonProps, 'onClick'>>
 ) {
   return (
-    <Button
-      variant="unstyled"
-      height="100%"
-      minHeight={28}
-      borderWidth={4}
-      borderColor="gray.100"
-      borderStyle="dashed"
-      color="blue.400"
-      {...props}
-    >
+    <AddButton minHeight={28} {...props}>
       + Add Volume
-    </Button>
+    </AddButton>
   )
 }
 

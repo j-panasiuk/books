@@ -19,7 +19,7 @@ import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
 import type { Stock } from 'domain/attribute/stock'
 import type { Seller } from 'domain/entity/Seller'
-import { type Book, getTitleAndSubtitle } from 'domain/entity/Book'
+import { type Book, getTitleAndSubtitle, BookItem } from 'domain/entity/Book'
 import type { BookVolume } from 'domain/entity/BookVolume'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
 import { AppLayout } from 'pages'
@@ -28,6 +28,8 @@ import { BooksSorting } from './sorting'
 import { BookPanel } from './panel'
 import { api } from './index.api'
 import { useBooksList, useSellers } from '.'
+import { BookVolumeCopy } from 'domain/entity/BookVolumeCopy'
+import { BookVolumeCopyCover } from 'domain/entity/BookVolumeCopy/Cover'
 
 export default function BooksPage() {
   const { booksQuery, books, ...listControls } = useBooksList()
@@ -73,6 +75,7 @@ export default function BooksPage() {
             <Th>Author</Th>
             <Th>Volumes</Th>
             <Th>Title</Th>
+            <Th>Copies</Th>
             <Th>Suggested By</Th>
             <Th>Sellers</Th>
             <Th>Actions</Th>
@@ -95,6 +98,9 @@ export default function BooksPage() {
               </Td>
               <Td>
                 <Title book={book} />
+              </Td>
+              <Td>
+                <BookCopies book={book} />
               </Td>
               <Td>{book.suggestedBy}</Td>
               <Td>
@@ -162,6 +168,38 @@ function Title({ book }: TitleProps) {
         </Text>
       ) : null}
     </>
+  )
+}
+
+type BookCopiesProps = {
+  book: BookItem
+}
+
+function BookCopies({ book }: BookCopiesProps) {
+  const getCopyCoverTitle = (copy: BookVolumeCopy): string => {
+    switch (copy.ownership) {
+      case 'borrowed':
+        return copy.from
+      case 'owned':
+        return copy.to
+      case 'gifted':
+        return copy.to
+    }
+  }
+
+  return (
+    <HStack spacing={1}>
+      {book.volumes.flatMap((vol) =>
+        vol.copies.flatMap((copy, i) => (
+          <BookVolumeCopyCover
+            key={`${vol.no}.${i}`}
+            copy={copy}
+            title={getCopyCoverTitle(copy)}
+            width={5}
+          />
+        ))
+      ) ?? null}
+    </HStack>
   )
 }
 
