@@ -15,6 +15,7 @@ export function Pages({
       {pageIndex > 1 && (
         <Button
           size="sm"
+          variant="outline"
           onClick={() => setPagination((p) => ({ ...p, pageIndex: 0 }))}
         >
           {'<< '}
@@ -22,13 +23,14 @@ export function Pages({
         </Button>
       )}
       {Math.abs(pageIndex) > 2 && (
-        <Button size="sm" disabled>
+        <Button size="sm" variant="outline" disabled>
           ...
         </Button>
       )}
       {pageIndex > 0 && (
         <Button
           size="sm"
+          variant="outline"
           onClick={() =>
             setPagination((p) => ({ ...p, pageIndex: p.pageIndex - 1 }))
           }
@@ -36,12 +38,15 @@ export function Pages({
           {pageIndex}
         </Button>
       )}
-      <Button size="sm" color="orange.300">
-        {1 + pageIndex}
-      </Button>
+      {pageCount > 1 && (
+        <Button size="sm" variant="outline" color="orange.300">
+          {1 + pageIndex}
+        </Button>
+      )}
       {1 + pageIndex < pageCount && (
         <Button
           size="sm"
+          variant="outline"
           onClick={() =>
             setPagination((p) => ({ ...p, pageIndex: p.pageIndex + 1 }))
           }
@@ -50,13 +55,14 @@ export function Pages({
         </Button>
       )}
       {Math.abs(pageIndex - pageCount) > 2 && (
-        <Button size="sm" disabled>
+        <Button size="sm" variant="outline" disabled>
           ...
         </Button>
       )}
       {2 + pageIndex < pageCount && (
         <Button
           size="sm"
+          variant="outline"
           onClick={() =>
             setPagination((p) => ({ ...p, pageIndex: pageCount - 1 }))
           }
