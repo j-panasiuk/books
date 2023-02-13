@@ -23,6 +23,13 @@ export function Layout({ children, nav, actions }: LayoutProps) {
   )
 }
 
+export function scrollToTop() {
+  document
+    .getElementsByTagName('main')
+    .item(0)
+    ?.scrollTo({ top: 0, behavior: 'auto' })
+}
+
 type HeaderProps = {
   nav?: JSX.Element
   actions?: JSX.Element

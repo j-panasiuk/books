@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { scrollToTop } from 'components/Layout'
 import type { Book } from 'domain/entity/Book'
 import { BookFilters, matches } from 'domain/entity/Book/BookFilters'
 import { getSuggestedByPeople } from 'domain/entity/Book'
@@ -48,6 +49,10 @@ export function useBooksList() {
   useEffect(() => {
     setPagination((p) => ({ ...p, pageIndex: 0 }))
   }, [filters, sort])
+
+  useEffect(() => {
+    scrollToTop()
+  }, [pagination])
 
   let books = booksQuery.data
   let itemsTotal = books?.length
