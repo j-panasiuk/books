@@ -138,6 +138,7 @@ export function BookPanelCreate({
                   setFormErrors(({ author, ...rest }) => rest)
                 }
               }}
+              autoFocus
             />
             {formErrors.author ? (
               <FormErrorMessage>{formErrors.author}</FormErrorMessage>
