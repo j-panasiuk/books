@@ -10,9 +10,10 @@ import {
 } from '@chakra-ui/react'
 import type { Seller } from '@prisma/client'
 import { Labelled } from 'components/Labelled'
+import { Select } from 'components/Select'
+import { stockOptions } from 'domain/attribute/stock'
 import type { BookVolume } from 'domain/entity/BookVolume'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
-import { SellerStockSelect } from 'domain/entity/BookVolumeSellerStock/select'
 
 export function BookVolumeCardAdd(
   props: Required<Pick<ButtonProps, 'onClick'>>
@@ -104,8 +105,9 @@ export function BookVolumeCard({
               />
             }
           >
-            <SellerStockSelect
+            <Select
               id={key}
+              options={stockOptions}
               value={stock}
               onSelect={(stock) => {
                 updateVolume({
