@@ -33,7 +33,7 @@ import {
   BookVolumeCard,
   BookVolumeCardAdd,
 } from 'domain/entity/BookVolume/Cards'
-import { useSellers } from '.'
+import { useSellers } from 'domain/entity/Seller/queries'
 
 // --- FORM VALUES ---
 

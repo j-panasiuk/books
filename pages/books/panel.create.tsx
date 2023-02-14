@@ -27,12 +27,12 @@ import {
   BookCreateInput,
   bookCreateInputStruct,
 } from 'domain/entity/Book'
+import { fetchBook } from 'domain/entity/Book/api'
 import {
   BookVolumeCard,
   BookVolumeCardAdd,
 } from 'domain/entity/BookVolume/Cards'
 import { bookVolumeStruct, canRemoveVolume } from 'domain/entity/BookVolume'
-import { fetchBook } from './index.api'
 
 // --- FORM VALUES ---
 

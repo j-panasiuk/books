@@ -1,22 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
 import { scrollToTop } from 'components/Layout'
-import type { Book } from 'domain/entity/Book'
+import { type Book, getSuggestedByPeople } from 'domain/entity/Book'
+import { useBooksQuery, useBooks } from 'domain/entity/Book/queries'
 import { BookFilters, matches } from 'domain/entity/Book/BookFilters'
-import { getSuggestedByPeople } from 'domain/entity/Book'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
 import { type Pagination, countPages, rangeOf } from 'utils/query/pagination'
-import { fetchBooks, fetchSellers } from './index.api'
-
-function useBooksQuery() {
-  return useQuery(['books'], fetchBooks)
-}
-
-export function useBooks() {
-  const booksQuery = useBooksQuery()
-  return booksQuery.data || []
-}
 
 const initialFilters: BookFilters = {
   phrase: '',
@@ -105,15 +94,4 @@ export function useBooksSuggestedByPeople() {
   }, [books])
 
   return people
-}
-
-export function useSellersQuery() {
-  return useQuery(['sellers'], fetchSellers, {
-    staleTime: 1000 * 60 * 60 * 12,
-  })
-}
-
-export function useSellers() {
-  const sellersQuery = useSellersQuery()
-  return sellersQuery.data || []
 }

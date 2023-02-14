@@ -20,7 +20,13 @@ import { Pencil } from 'components/Icons/Pencil'
 import { shortenNames } from 'domain/attribute/name'
 import type { Stock } from 'domain/attribute/stock'
 import type { Seller } from 'domain/entity/Seller'
-import { type Book, getTitleAndSubtitle, BookItem } from 'domain/entity/Book'
+import { useSellers } from 'domain/entity/Seller/queries'
+import {
+  type Book,
+  type BookItem,
+  getTitleAndSubtitle,
+} from 'domain/entity/Book'
+import { api } from 'domain/entity/Book/api'
 import type { BookVolume } from 'domain/entity/BookVolume'
 import { BookVolumeCopy } from 'domain/entity/BookVolumeCopy'
 import { BookVolumeCopyCover } from 'domain/entity/BookVolumeCopy/Cover'
@@ -29,8 +35,7 @@ import { AppLayout } from 'pages'
 import { BooksFilters } from './filters'
 import { BooksSorting } from './sorting'
 import { BookPanel } from './panel'
-import { api } from './index.api'
-import { useBooksList, useSellers } from '.'
+import { useBooksList } from '.'
 
 export default function BooksPage() {
   const { booksQuery, books, ...listControls } = useBooksList()
