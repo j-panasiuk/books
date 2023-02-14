@@ -1,12 +1,20 @@
-import type { HTMLProps } from 'react'
+import { type HTMLProps, type FormEventHandler, useCallback } from 'react'
 
-const _id = 'Form'
-
-// For now let's assume there is only one `Form` component on the page at a time.
-// If there are 2+, there will be collision of form ids!
-// TODO: generate unique form ids
-export function Form(props: HTMLProps<HTMLFormElement>) {
-  return <form id={_id} style={{ display: 'contents' }} {...props} />
+interface FormProps extends Omit<HTMLProps<HTMLFormElement>, 'onSubmit'> {
+  submit: () => unknown
+  id: string
 }
 
-Form.id = _id
+export function Form({ submit, id, ...props }: FormProps) {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+    (ev) => {
+      ev.preventDefault()
+      submit()
+    },
+    [submit]
+  )
+
+  return <form id={id} onSubmit={handleSubmit} style={style} {...props} />
+}
+
+const style = { display: 'contents' }

@@ -1,5 +1,5 @@
 import * as s from 'superstruct'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import {
   Button,
   ButtonGroup,
@@ -15,6 +15,7 @@ import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
 import { Form } from 'components/Form'
 import { createResponseFormValidator } from 'utils/api/response'
+import { focusFirstError } from 'utils/forms/validation'
 import {
   getErrorToastDescription,
   toastSuccess,
@@ -41,7 +42,6 @@ const formStruct = bookCreateInputStruct satisfies s.Describe<BookCreateInput>
 // --- FORM ERRORS ---
 
 type FormErrors = s.Infer<typeof formErrorsStruct>
-
 const formErrorsStruct = s.partial(
   s.object({
     author: s.string(),
@@ -63,6 +63,7 @@ export function BookPanelCreate({
   create,
 }: PanelCreateProps<Book>) {
   const toast = useToast()
+  const formId = useId()
   const [formValues, setFormValues] = useState<BookCreateFormValues>(
     formStruct.create(initialValue)
   )
@@ -81,6 +82,7 @@ export function BookPanelCreate({
       let errors = getFormErrors(err)
       if (errors) {
         setFormErrors(errors)
+        focusFirstError(formId)
       } else {
         toast({
           ...toastError,
@@ -111,19 +113,14 @@ export function BookPanelCreate({
           <Button onClick={saveAndEdit} variant="outline">
             Save and edit
           </Button>
-          <Button type="submit" form={Form.id}>
+          <Button type="submit" form={formId}>
             Save
           </Button>
         </ButtonGroup>
       }
     >
       <SimpleGrid columns={3} gridGap={2}>
-        <Form
-          onSubmit={(ev) => {
-            ev.preventDefault()
-            saveAndClose()
-          }}
-        >
+        <Form id={formId} submit={saveAndClose}>
           <FormControl isInvalid={Boolean(formErrors.author)}>
             <FormLabel htmlFor="author">Author</FormLabel>
             <Input
