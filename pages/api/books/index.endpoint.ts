@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import type { Book } from '@prisma/client'
 import { prisma } from 'prisma/client'
 import { handleResponseError, type ResponseError } from 'utils/api/response'
-import { bookCreateInputStruct, bookItemInclude } from 'domain/entity/Book'
+import { bookCreateInputValidStruct, bookItemInclude } from 'domain/entity/Book'
 
 export default async function booksHandler(
   req: NextApiRequest,
@@ -18,13 +18,18 @@ export default async function booksHandler(
 
     case 'POST': {
       try {
-        const { volumes, ...bookInput } = bookCreateInputStruct.create(req.body)
+        const { volumes, ...bookInput } = bookCreateInputValidStruct.create(
+          req.body
+        )
         const created = await prisma.book.create({
           data: {
             ...bookInput,
             volumes: {
               create: volumes.map(({ sellers, ...vol }) => ({
                 ...vol,
+                copies: {
+                  create: [],
+                },
                 sellers: {
                   create: [],
                 },

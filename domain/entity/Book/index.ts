@@ -81,6 +81,12 @@ export const bookCreateInputStruct = s.coerce(
   s.unknown(),
   coerceBookInput
 ) satisfies s.Describe<Base<BookItem>>
+export const bookCreateInputValidStruct = s.assign(
+  bookCreateInputStruct,
+  s.object({
+    title,
+  })
+) satisfies s.Describe<Base<BookItem>>
 
 // --- UPDATE ---
 
@@ -94,6 +100,12 @@ export const bookUpdateInputStruct = s.coerce(
   }),
   s.unknown(),
   coerceBookInput
+) satisfies s.Describe<Base<BookItem>>
+export const bookUpdateInputValidStruct = s.assign(
+  bookUpdateInputStruct,
+  s.object({
+    title,
+  })
 ) satisfies s.Describe<Base<BookItem>>
 
 // --- HELPERS ---

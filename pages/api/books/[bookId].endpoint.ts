@@ -6,7 +6,7 @@ import { log } from 'utils/log'
 import { omit } from 'utils/omit'
 import { partitionByOperation } from 'utils/partition'
 import { idStruct } from 'domain/attribute/id'
-import { bookItemInclude, bookUpdateInputStruct } from 'domain/entity/Book'
+import { bookItemInclude, bookUpdateInputValidStruct } from 'domain/entity/Book'
 import {
   type BookVolumeSellerStock,
   bookVolumeSellerStockStruct,
@@ -35,7 +35,7 @@ export default async function bookHandler(
 
     case 'PUT': {
       try {
-        const bookInput = bookUpdateInputStruct.create(req.body)
+        const bookInput = bookUpdateInputValidStruct.create(req.body)
 
         log.info('tx: starting transaction...')
         const updated = await prisma.$transaction(async (tx) => {
