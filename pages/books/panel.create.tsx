@@ -28,6 +28,7 @@ import {
   bookCreateInputStruct,
 } from 'domain/entity/Book'
 import { fetchBook } from 'domain/entity/Book/api'
+import { BookHints } from 'domain/entity/Book/Hints'
 import {
   BookVolumeCard,
   BookVolumeCardAdd,
@@ -178,6 +179,12 @@ export function BookPanelCreate({
               }}
             />
           </FormControl>
+
+          <BookHints
+            author={formValues.author}
+            title={formValues.title}
+            suggestedBy={formValues.suggestedBy}
+          />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
             <FormLabel>Volumes</FormLabel>

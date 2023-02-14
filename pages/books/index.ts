@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { scrollToTop } from 'components/Layout'
-import { type Book, getSuggestedByPeople } from 'domain/entity/Book'
-import { useBooksQuery, useBooks } from 'domain/entity/Book/queries'
+import { type Book } from 'domain/entity/Book'
+import { useBooksQuery } from 'domain/entity/Book/queries'
 import { BookFilters, matches } from 'domain/entity/Book/BookFilters'
 import { hasFilters } from 'utils/query/filters'
 import { type Sort, ORDER, by } from 'utils/query/sort'
@@ -78,20 +78,4 @@ export function useBooksList() {
     itemsMatching,
     pageCount,
   }
-}
-
-export function useBooksSuggestedByPeople() {
-  const books = useBooks()
-
-  const people = useMemo(() => {
-    let people: string[] = []
-    for (const book of books || []) {
-      for (const person of getSuggestedByPeople(book)) {
-        if (person && !people.includes(person)) people.push(person)
-      }
-    }
-    return people.sort()
-  }, [books])
-
-  return people
 }

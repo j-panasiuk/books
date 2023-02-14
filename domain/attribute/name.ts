@@ -17,3 +17,7 @@ export function shortenName(name: string): string {
 export function shortenNames(names: string): string {
   return names.split(', ').map(shortenName).join(', ')
 }
+
+export function isSameCaseInsensitive(fst: string, snd: string): boolean {
+  return fst.trim().toLocaleLowerCase() === snd.trim().toLocaleLowerCase()
+}

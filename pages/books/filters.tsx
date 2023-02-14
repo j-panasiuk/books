@@ -1,9 +1,9 @@
 import { Button, GridItem, SimpleGrid, Input } from '@chakra-ui/react'
 import { Select } from 'components/Select'
 import { ownershipOptions } from 'domain/attribute/ownership'
+import { useBooksSuggestedByPeople } from 'domain/entity/Book/queries'
 import { type BookFilters } from 'domain/entity/Book/BookFilters'
 import { type FiltersProps } from 'utils/query/filters'
-import { useBooksSuggestedByPeople } from '.'
 
 export function BooksFilters({
   filters,

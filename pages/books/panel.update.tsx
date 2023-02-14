@@ -28,6 +28,7 @@ import {
   bookUpdateInputStruct,
   BookUpdateInput,
 } from 'domain/entity/Book'
+import { BookHints } from 'domain/entity/Book/Hints'
 import { bookVolumeStruct, canRemoveVolume } from 'domain/entity/BookVolume'
 import {
   BookVolumeCard,
@@ -207,6 +208,13 @@ export function BookPanelUpdate({
               <FormErrorMessage>{formErrors.suggestedBy}</FormErrorMessage>
             ) : null}
           </FormControl>
+
+          <BookHints
+            author={formValues.author}
+            title={formValues.title}
+            suggestedBy={formValues.suggestedBy}
+            bookId={initialValue.id}
+          />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
             <FormLabel>Volumes</FormLabel>

@@ -1,8 +1,9 @@
 import type * as DB from '@prisma/client'
 import * as s from 'superstruct'
-import { nameStruct } from 'domain/attribute/name'
+import { nameStruct, isSameCaseInsensitive } from 'domain/attribute/name'
 import { type Serialized, type Base, entityStruct } from 'domain/entity'
 import { type BookVolume, bookVolumesStruct } from 'domain/entity/BookVolume'
+import { type Matches } from 'utils/matches'
 import { pick } from 'utils/pick'
 
 const author = nameStruct
@@ -124,4 +125,10 @@ export function getSuggestedByPeople(
   book: Pick<Book, 'suggestedBy'>
 ): string[] {
   return book.suggestedBy?.split(', ') || []
+}
+
+export const matchByAuthor: Matches<string, Book> = (person) => (book) => {
+  return book.author
+    .split(', ')
+    .some((coauthor) => isSameCaseInsensitive(coauthor, person))
 }
