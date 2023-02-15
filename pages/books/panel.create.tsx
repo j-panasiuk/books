@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 import type { PanelCreateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
+import { JSONPreview } from 'components/JSONPreview'
 import { Form } from 'components/Form'
 import { createResponseFormValidator } from 'utils/api/response'
 import { focusFirstError } from 'utils/forms/validation'
@@ -23,9 +24,10 @@ import {
 } from 'utils/feedback/toast'
 import {
   type Book,
+  type BookCreateInput,
   getShorthand,
-  BookCreateInput,
   bookCreateInputStruct,
+  bookCreateInputValidStruct,
 } from 'domain/entity/Book'
 import { fetchBook } from 'domain/entity/Book/api'
 import { BookHints } from 'domain/entity/Book/Hints'
@@ -234,6 +236,13 @@ export function BookPanelCreate({
             }}
           />
         </Form>
+
+        <GridItem colStart={1} colEnd={-1} mt={2}>
+          <JSONPreview
+            validStruct={bookCreateInputValidStruct}
+            formValues={formValues}
+          />
+        </GridItem>
       </SimpleGrid>
     </PanelContent>
   )

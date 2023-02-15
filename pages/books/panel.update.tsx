@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react'
 import type { PanelUpdateProps } from 'domain/entity/panel'
 import { PanelContent } from 'components/PanelContent'
+import { JSONPreview } from 'components/JSONPreview'
 import { Form } from 'components/Form'
 import { createResponseFormValidator } from 'utils/api/response'
 import { focusFirstError } from 'utils/forms/validation'
@@ -24,9 +25,10 @@ import {
 } from 'utils/feedback/toast'
 import {
   type Book,
+  type BookUpdateInput,
   getShorthand,
   bookUpdateInputStruct,
-  BookUpdateInput,
+  bookUpdateInputValidStruct,
 } from 'domain/entity/Book'
 import { BookHints } from 'domain/entity/Book/Hints'
 import { bookVolumeStruct, canRemoveVolume } from 'domain/entity/BookVolume'
@@ -266,6 +268,13 @@ export function BookPanelUpdate({
             }}
           />
         </Form>
+
+        <GridItem colStart={1} colEnd={-1} mt={2}>
+          <JSONPreview
+            validStruct={bookUpdateInputValidStruct}
+            formValues={formValues}
+          />
+        </GridItem>
       </SimpleGrid>
     </PanelContent>
   )

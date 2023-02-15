@@ -1,6 +1,6 @@
 import { Code, CodeProps, GridItem } from '@chakra-ui/react'
 import { type Id } from 'domain/attribute/id'
-import { isSameCaseInsensitive } from 'domain/attribute/name'
+import { isSameCaseInsensitive, splitNames } from 'domain/attribute/name'
 import {
   useBooks,
   useBooksAuthorPeople,
@@ -83,7 +83,7 @@ function BookTitleHints({ title, bookId }: Pick<Props, 'title' | 'bookId'>) {
 function BookSuggestedByHints({ suggestedBy }: Pick<Props, 'suggestedBy'>) {
   const existingSuggesters = useBooksSuggestedByPeople()
 
-  const suggestedByPeople = suggestedBy.split(', ')
+  const suggestedByPeople = splitNames(suggestedBy)
   const matchingSuggestPeople = existingSuggesters.filter((exs) =>
     suggestedByPeople.some((person) => isSameCaseInsensitive(person, exs))
   )
