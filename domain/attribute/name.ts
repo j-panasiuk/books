@@ -41,3 +41,7 @@ export function shortenNames(names: string): string {
 export function isSameCaseInsensitive(fst: string, snd: string): boolean {
   return fst.trim().toLocaleLowerCase() === snd.trim().toLocaleLowerCase()
 }
+
+export function includesCaseInsensitive(whole: string, part: string): boolean {
+  return whole.toLocaleLowerCase().includes(part.toLocaleLowerCase())
+}

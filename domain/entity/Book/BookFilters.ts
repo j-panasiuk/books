@@ -1,16 +1,18 @@
+import { includesCaseInsensitive } from 'domain/attribute/name'
 import { type Ownership } from 'domain/attribute/ownership'
 import type { BookItem } from 'domain/entity/Book'
 import type { Matches } from 'utils/matches'
 import type { OPTION } from 'utils/forms/options'
 
 export type BookFilters = Partial<{
+  phraseField: PhraseField
   phrase: string
   suggestedBy: OPTION.NONE | OPTION.SOME | string
   ownership: Ownership
 }>
 
 export const matches: Matches<BookFilters, BookItem> = (fs) => (book) => {
-  if (fs.phrase && !matchesPhrase(fs.phrase)(book)) return false
+  if (fs.phrase && !matchesPhrase(fs)(book)) return false
   if (fs.suggestedBy && !matchesSuggestedBy(fs.suggestedBy)(book)) return false
   if (fs.ownership && !matchesOwnership(fs.ownership)(book)) return false
   return true
@@ -18,10 +20,24 @@ export const matches: Matches<BookFilters, BookItem> = (fs) => (book) => {
 
 // --- PHRASE ---
 
-const matchesPhrase: Matches<BookFilters['phrase'], BookItem> =
-  (phrase) => (book) => {
-    return (['title', 'author'] as const).some((key) =>
-      book[key]?.toLocaleLowerCase()?.includes(phrase.toLocaleLowerCase())
+export type PhraseField = typeof phraseFieldOptions[number]
+export const phraseFieldOptions = ['title', 'author'] as const
+export const isPhraseField = (val: unknown): val is PhraseField => {
+  return phraseFieldOptions.includes(val as any)
+}
+
+const matchesPhrase: Matches<
+  Pick<BookFilters, 'phrase' | 'phraseField'>,
+  BookItem
+> =
+  ({ phrase, phraseField }) =>
+  (book) => {
+    const fieldsToCheck: readonly PhraseField[] = isPhraseField(phraseField)
+      ? [phraseField]
+      : phraseFieldOptions
+
+    return fieldsToCheck.some((key) =>
+      includesCaseInsensitive(book[key], phrase || '')
     )
   }
 
