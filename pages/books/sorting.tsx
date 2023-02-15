@@ -2,6 +2,7 @@ import { Button, ButtonGroup, HStack, Text } from '@chakra-ui/react'
 import type { BookItem } from 'domain/entity/Book'
 import { bookSortOptions, sortBy } from 'domain/entity/Book/BookSorts'
 import { type SortProps, ORDER, reverse } from 'utils/query/sort'
+import { T } from 'utils/translate'
 
 export function BooksSorting({
   sort,
@@ -35,7 +36,7 @@ export function BooksSorting({
       </ButtonGroup>
 
       <Button size="sm" onClick={resetSort}>
-        Reset
+        {T('Reset')}
       </Button>
     </HStack>
   )

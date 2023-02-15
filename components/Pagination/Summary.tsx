@@ -1,5 +1,6 @@
 import { HStack, Text } from '@chakra-ui/react'
 import { type Pagination } from 'utils/query/pagination'
+import { T } from 'utils/translate'
 
 type Props = {
   pagination: Pagination
@@ -33,7 +34,7 @@ export function Summary({ itemsMatching, itemsTotal, pagination }: Props) {
           <Text fontSize="sm"> / {itemsTotal}</Text>
         </>
       ) : (
-        <Text fontSize="sm">No results found</Text>
+        <Text fontSize="sm">{T('No results found')}</Text>
       )}
     </HStack>
   )

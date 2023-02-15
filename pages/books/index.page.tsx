@@ -15,6 +15,7 @@ import {
   IconButton,
 } from '@chakra-ui/react'
 import { usePanel } from 'utils/interaction/panel'
+import { T } from 'utils/translate'
 import { PageSize, Pages, Summary } from 'components/Pagination'
 import { Pencil } from 'components/Icons/Pencil'
 import { shortenNames } from 'domain/attribute/name'
@@ -53,10 +54,10 @@ export default function BooksPage() {
             onClick={() => booksQuery.refetch()}
             isLoading={booksQuery.isFetching}
           >
-            Refetch
+            {T('Refetch')}
           </Button>
           <Button size="sm" onClick={() => panelControls.openCreatePanel()}>
-            + Add book
+            {T('+ Add book')}
           </Button>
         </HStack>
       }
@@ -78,13 +79,13 @@ export default function BooksPage() {
       >
         <Thead>
           <Tr>
-            <Th>Author</Th>
-            <Th>Volumes</Th>
-            <Th>Title</Th>
-            <Th>Copies</Th>
-            <Th>Suggested By</Th>
-            <Th>Sellers</Th>
-            <Th>Actions</Th>
+            <Th>{T('Author')}</Th>
+            <Th>{T('Volumes')}</Th>
+            <Th>{T('Title')}</Th>
+            <Th>{T('Copies')}</Th>
+            <Th>{T('Suggested By')}</Th>
+            <Th>{T('Sellers')}</Th>
+            <Th>{T('Actions')}</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -123,8 +124,8 @@ export default function BooksPage() {
               <Td isNumeric>
                 <ButtonGroup size="sm" variant="ghost" color="gray.300">
                   <IconButton
-                    title="Edit"
-                    aria-label="Edit"
+                    title={T('Edit')}
+                    aria-label={T('Edit')}
                     icon={<Pencil size={20} />}
                     onClick={() => panelControls.openUpdatePanel(book)}
                   />
@@ -141,7 +142,7 @@ export default function BooksPage() {
             fontWeight="bold"
             textColor="gray.300"
           >
-            No books found
+            {T('No books found')}
           </Text>
         </Center>
       ) : null}

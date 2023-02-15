@@ -2,6 +2,7 @@ import { type ButtonProps, GridItem, HStack } from '@chakra-ui/react'
 import { AddButton } from 'components/AddButton'
 import { Select } from 'components/Select'
 import { ownershipOptions } from 'domain/attribute/ownership'
+import { T } from 'utils/translate'
 import { BookVolumeCopyCover } from './Cover'
 import { type BookVolumeCopy } from '.'
 
@@ -17,7 +18,7 @@ export function BookVolumeCopyItemAdd(
   return (
     <GridItem colStart={1} colEnd={-1}>
       <AddButton minHeight={16} {...props}>
-        + Add Volume Copy
+        {T('+ Add Volume Copy')}
       </AddButton>
     </GridItem>
   )

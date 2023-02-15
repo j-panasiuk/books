@@ -1,6 +1,7 @@
 import * as s from 'superstruct'
 import { Prisma } from '@prisma/client'
 import { log } from 'utils/log'
+import { T } from 'utils/translate'
 
 export type ResponseError = {
   message: string
@@ -68,9 +69,9 @@ export async function handleResponseError(
 
   return {
     status: 500,
-    name: 'Unexpected Server Error',
+    name: T('Unexpected Server Error'),
     cause: err instanceof Error ? err.cause : undefined,
-    message: err instanceof Error ? err.message : 'Something went wrong...',
+    message: err instanceof Error ? err.message : T('Something went wrong...'),
   }
 }
 

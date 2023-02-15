@@ -1,3 +1,5 @@
+import { T } from 'utils/translate'
+
 export enum OPTION {
   NONE = '-',
   SOME = '*',
@@ -6,11 +8,11 @@ export enum OPTION {
 export function getOptionLabel(option?: string): string {
   switch (option) {
     case undefined:
-      return ''
+      return T('')
     case OPTION.NONE:
-      return '- (none)'
+      return T('- (none)')
     case OPTION.SOME:
-      return '* (some)'
+      return T('* (some)')
     default:
       return option
   }

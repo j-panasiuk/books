@@ -1,4 +1,5 @@
 import * as s from 'superstruct'
+import { T } from 'utils/translate'
 
 /** Any human-readable name */
 export const nameStruct = s.defaulted(
@@ -7,8 +8,8 @@ export const nameStruct = s.defaulted(
 ) satisfies s.Describe<string>
 
 export const validNameStruct = s.refine(nameStruct, 'validName', (name) => {
-  if (name.length === 0) return 'valid name cannot be empty'
-  if (name.trim().length === 0) return 'valid name cannot be blank'
+  if (name.length === 0) return T('valid name cannot be empty')
+  if (name.trim().length === 0) return T('valid name cannot be blank')
   return true
 }) satisfies s.Describe<string>
 

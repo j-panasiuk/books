@@ -7,6 +7,7 @@ import {
   phraseFieldOptions,
 } from 'domain/entity/Book/BookFilters'
 import { type FiltersProps } from 'utils/query/filters'
+import { T } from 'utils/translate'
 
 export function BooksFilters({
   filters,
@@ -27,13 +28,13 @@ export function BooksFilters({
             }}
             width={48}
             size="sm"
-            placeholder="Search by..."
+            placeholder={T('Search by...')}
             borderRightRadius="none"
             borderColor={filters.phraseField ? 'orange.300' : undefined}
             backgroundColor="gray.50"
           >
-            <option value="author">Author</option>
-            <option value="title">Title</option>
+            <option value="author">{T('Author')}</option>
+            <option value="title">{T('Title')}</option>
           </Select>
           <Input
             value={filters.phrase}
@@ -42,7 +43,7 @@ export function BooksFilters({
             }}
             type="search"
             size="sm"
-            placeholder="Phrase..."
+            placeholder={T('Phrase...')}
             borderLeftRadius="none"
             borderColor={filters.phrase ? 'orange.300' : undefined}
           />
@@ -56,7 +57,7 @@ export function BooksFilters({
             setFilters((fs) => ({ ...fs, suggestedBy }))
           }}
           size="sm"
-          placeholder="Suggested by..."
+          placeholder={T('Suggested by...')}
           borderColor={filters.suggestedBy ? 'orange.300' : undefined}
         />
       </GridItem>
@@ -68,13 +69,13 @@ export function BooksFilters({
             setFilters((fs) => ({ ...fs, ownership }))
           }}
           size="sm"
-          placeholder="Ownership..."
+          placeholder={T('Ownership...')}
           borderColor={filters.ownership ? 'orange.300' : undefined}
         />
       </GridItem>
       <GridItem colSpan={2}>
         <Button size="sm" onClick={resetFilters}>
-          Reset
+          {T('Reset')}
         </Button>
       </GridItem>
     </SimpleGrid>

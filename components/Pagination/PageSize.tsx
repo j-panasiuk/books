@@ -1,5 +1,8 @@
 import { Button, HStack, Select } from '@chakra-ui/react'
 import { type PaginationProps } from 'utils/query/pagination'
+import { T } from 'utils/translate'
+
+const pageSizeOptions = [20, 50, 100, 200, Infinity]
 
 export function PageSize({
   pagination: { pageSize },
@@ -19,11 +22,13 @@ export function PageSize({
           }
         }}
       >
-        <option value={20}>Page size: 20</option>
-        <option value={50}>Page size: 50</option>
-        <option value={100}>Page size: 100</option>
-        <option value={200}>Page size: 200</option>
-        <option value={Infinity}>Show all</option>
+        {pageSizeOptions.map((option) => (
+          <option key={`size.${option}`} value={option}>
+            {Number.isFinite(option)
+              ? T(`Page size: ${option}`)
+              : T('Show all')}
+          </option>
+        ))}
       </Select>
 
       <Button size="sm" onClick={resetPagination}>

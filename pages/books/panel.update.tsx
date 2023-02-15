@@ -23,6 +23,7 @@ import {
   toastError,
   toastSuccess,
 } from 'utils/feedback/toast'
+import { T } from 'utils/translate'
 import {
   type Book,
   type BookUpdateInput,
@@ -79,7 +80,7 @@ export function BookPanelUpdate({
       const updated = await update(initialValue.id, formValues)
       toast({
         ...toastSuccess,
-        title: 'Updated book',
+        title: T('Updated book'),
         description: getShorthand(updated),
       })
       return updated
@@ -91,7 +92,7 @@ export function BookPanelUpdate({
       } else {
         toast({
           ...toastError,
-          title: 'Failed to update book',
+          title: T('Failed to update book'),
           description: getErrorToastDescription(err),
         })
       }
@@ -104,14 +105,14 @@ export function BookPanelUpdate({
       const deleted = await remove(initialValue.id).then(closePanel)
       toast({
         ...toastSuccess,
-        title: 'Deleted book',
+        title: T('Deleted book'),
         description: getShorthand(initialValue),
       })
       return deleted
     } catch (err) {
       toast({
         ...toastError,
-        title: 'Failed to delete book',
+        title: T('Failed to delete book'),
         description: getErrorToastDescription(err),
       })
       return Promise.reject(err)
@@ -133,17 +134,17 @@ export function BookPanelUpdate({
             variant="outline"
             onClick={onRemove}
           >
-            Delete
+            {T('Delete')}
           </Button>
         </Flex>
       }
       actions={
         <ButtonGroup size="sm" colorScheme="blue">
           <Button onClick={copyAsNewDraft} variant="outline">
-            Copy as new draft
+            {T('Copy as new draft')}
           </Button>
           <Button type="submit" form={formId}>
-            Save
+            {T('Save')}
           </Button>
         </ButtonGroup>
       }
@@ -151,7 +152,7 @@ export function BookPanelUpdate({
       <SimpleGrid columns={3} gridGap={2}>
         <Form id={formId} submit={saveAndClose}>
           <FormControl isInvalid={Boolean(formErrors.author)}>
-            <FormLabel htmlFor="author">Author</FormLabel>
+            <FormLabel htmlFor="author">{T('Author')}</FormLabel>
             <Input
               id="author"
               type="text"
@@ -172,7 +173,7 @@ export function BookPanelUpdate({
           </FormControl>
 
           <FormControl isRequired isInvalid={Boolean(formErrors.title)}>
-            <FormLabel htmlFor="title">Title</FormLabel>
+            <FormLabel htmlFor="title">{T('Title')}</FormLabel>
             <Input
               id="title"
               type="text"
@@ -192,7 +193,7 @@ export function BookPanelUpdate({
           </FormControl>
 
           <FormControl isInvalid={Boolean(formErrors.suggestedBy)}>
-            <FormLabel htmlFor="suggested_by">Suggested by</FormLabel>
+            <FormLabel htmlFor="suggested_by">{T('Suggested by')}</FormLabel>
             <Input
               id="suggested_by"
               type="text"
@@ -219,7 +220,7 @@ export function BookPanelUpdate({
           />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
-            <FormLabel>Volumes</FormLabel>
+            <FormLabel>{T('Volumes')}</FormLabel>
           </GridItem>
 
           {formValues.volumes.map((vol) => (

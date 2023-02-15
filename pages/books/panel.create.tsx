@@ -22,6 +22,7 @@ import {
   toastSuccess,
   toastError,
 } from 'utils/feedback/toast'
+import { T } from 'utils/translate'
 import {
   type Book,
   type BookCreateInput,
@@ -77,7 +78,7 @@ export function BookPanelCreate({
       const created = await create(formValues)
       toast({
         ...toastSuccess,
-        title: 'Created book',
+        title: T('Created book'),
         description: getShorthand(created),
       })
       return created
@@ -89,7 +90,7 @@ export function BookPanelCreate({
       } else {
         toast({
           ...toastError,
-          title: 'Failed to create book',
+          title: T('Failed to create book'),
           description: getErrorToastDescription(err),
         })
       }
@@ -107,17 +108,17 @@ export function BookPanelCreate({
   return (
     <PanelContent
       close={closePanel}
-      header={<>Add book</>}
+      header={<>{T('Add book')}</>}
       actions={
         <ButtonGroup size="sm" colorScheme="blue">
           <Button onClick={saveAndAddAnother} variant="outline">
-            Save and add another
+            {T('Save and add another')}
           </Button>
           <Button onClick={saveAndEdit} variant="outline">
-            Save and edit
+            {T('Save and edit')}
           </Button>
           <Button type="submit" form={formId}>
-            Save
+            {T('Save')}
           </Button>
         </ButtonGroup>
       }
@@ -125,7 +126,7 @@ export function BookPanelCreate({
       <SimpleGrid columns={3} gridGap={2}>
         <Form id={formId} submit={saveAndClose}>
           <FormControl isInvalid={Boolean(formErrors.author)}>
-            <FormLabel htmlFor="author">Author</FormLabel>
+            <FormLabel htmlFor="author">{T('Author')}</FormLabel>
             <Input
               id="author"
               type="text"
@@ -146,7 +147,7 @@ export function BookPanelCreate({
           </FormControl>
 
           <FormControl isRequired isInvalid={Boolean(formErrors.title)}>
-            <FormLabel htmlFor="title">Title</FormLabel>
+            <FormLabel htmlFor="title">{T('Title')}</FormLabel>
             <Input
               id="title"
               type="text"
@@ -166,7 +167,7 @@ export function BookPanelCreate({
           </FormControl>
 
           <FormControl>
-            <FormLabel htmlFor="suggested_by">Suggested by</FormLabel>
+            <FormLabel htmlFor="suggested_by">{T('Suggested by')}</FormLabel>
             <Input
               id="suggested_by"
               type="text"
@@ -189,7 +190,7 @@ export function BookPanelCreate({
           />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
-            <FormLabel>Volumes</FormLabel>
+            <FormLabel>{T('Volumes')}</FormLabel>
           </GridItem>
 
           {formValues.volumes.map((vol) => (

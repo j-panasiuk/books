@@ -18,13 +18,14 @@ import {
   BookVolumeCopyItemAdd,
 } from 'domain/entity/BookVolumeCopy/Item'
 import { SellerStockIcon } from 'domain/entity/BookVolumeSellerStock/icon'
+import { T } from 'utils/translate'
 
 export function BookVolumeCardAdd(
   props: Required<Pick<ButtonProps, 'onClick'>>
 ) {
   return (
     <AddButton minHeight={28} {...props}>
-      + Add Volume
+      {T('+ Add Volume')}
     </AddButton>
   )
 }
@@ -60,7 +61,7 @@ export function BookVolumeCard({
         justifyContent="space-between"
       >
         <Heading as="h4" size="sm" width="100%" textAlign="center">
-          Vol. {volume.no}
+          {T(`Vol. no ${volume.no}`)}
         </Heading>
         {removeVolume ? (
           <CloseButton onClick={removeVolume} title="Remove volume" />

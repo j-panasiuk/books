@@ -1,4 +1,4 @@
-import { type ButtonProps, Button, HStack } from '@chakra-ui/react'
+import { type ButtonProps, Button, HStack, Text } from '@chakra-ui/react'
 import { type PaginationProps } from 'utils/query/pagination'
 
 interface Props extends PaginationProps {
@@ -18,8 +18,10 @@ export function Pages({
     <HStack spacing={1}>
       {pageIndex > 1 && (
         <Button {...buttonProps} onClick={() => setPage(0)}>
-          {'<< '}
           {1}
+          <Text color="gray.300" marginLeft={1}>
+            {'❮❮'}
+          </Text>
         </Button>
       )}
       {Math.abs(pageIndex) > 2 && (
@@ -49,7 +51,9 @@ export function Pages({
       )}
       {2 + pageIndex < pageCount && (
         <Button {...buttonProps} onClick={() => setPage(pageCount - 1)}>
-          {'>> '}
+          <Text color="gray.300" marginRight={1}>
+            {'❯❯'}
+          </Text>
           {pageCount}
         </Button>
       )}
