@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { scrollToTop } from 'components/Layout'
-import { type Book } from 'domain/entity/Book'
+import { type BookItem } from 'domain/entity/Book'
 import { useBooksQuery } from 'domain/entity/Book/queries'
 import { BookFilters, matches } from 'domain/entity/Book/BookFilters'
 import { hasFilters } from 'utils/query/filters'
@@ -11,7 +11,7 @@ const initialFilters: BookFilters = {
   phrase: '',
 }
 
-const initialSort: Sort<Book> = {
+const initialSort: Sort<BookItem> = {
   key: 'updatedAt',
   order: ORDER.DESC,
 }

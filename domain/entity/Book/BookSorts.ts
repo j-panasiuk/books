@@ -1,7 +1,7 @@
-import type { Book } from 'domain/entity/Book'
+import type { BookItem } from 'domain/entity/Book'
 import { ORDER, SortOrder, Sort } from 'utils/query/sort'
 
-type BookSortKey = keyof Book
+type BookSortKey = keyof BookItem
 
 type BookSort = {
   key: BookSortKey
@@ -17,7 +17,7 @@ export const bookSortOptions: BookSort[] = [
   { key: 'updatedAt', defaultOrder: ORDER.DESC },
 ]
 
-export const sortBy = (key: BookSortKey, order?: SortOrder): Sort<Book> => {
+export const sortBy = (key: BookSortKey, order?: SortOrder): Sort<BookItem> => {
   return {
     key,
     order:
