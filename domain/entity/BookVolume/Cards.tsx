@@ -59,7 +59,7 @@ export function BookVolumeCard({
         alignItems="center"
         justifyContent="space-between"
       >
-        <Heading as="h4" size="sm">
+        <Heading as="h4" size="sm" width="100%" textAlign="center">
           Vol. {volume.no}
         </Heading>
         {removeVolume ? (
@@ -80,7 +80,7 @@ export function BookVolumeCard({
         />
       </GridItem>
 
-      <HLine />
+      {sellers ? <HLine /> : null}
 
       {sellers?.map(({ name, icon }) => {
         const key = `seller.${name}`

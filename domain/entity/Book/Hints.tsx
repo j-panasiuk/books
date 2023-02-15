@@ -29,23 +29,32 @@ function BookAuthorHints({ author }: Pick<Props, 'author'>) {
   const books = useBooks()
   const existingAuthors = useBooksAuthorPeople()
 
-  const matchingAuthor = existingAuthors.find((exs) =>
-    isSameCaseInsensitive(author, exs)
-  )
+  const coauthors = splitNames(author)
+  const matchingAuthors =
+    author.length > 0
+      ? existingAuthors.filter((exs) =>
+          coauthors.some(
+            (coauthor) =>
+              coauthor.length > 0 && isSameCaseInsensitive(coauthor, exs)
+          )
+        )
+      : []
 
   return (
     <GridItem>
-      {matchingAuthor && (
+      {matchingAuthors.length > 0 && (
         <>
           <Code {...codeProps} background="green.100">
-            {matchingAuthor}
+            {matchingAuthors.join('\n')}
           </Code>
-          <Code {...codeProps}>
-            {books
-              .filter(matchByAuthor(matchingAuthor))
-              .map(getShorthand)
-              .join('\n')}
-          </Code>
+          {matchingAuthors.map((matchingAuthor) => (
+            <Code key={matchingAuthor} {...codeProps}>
+              {books
+                .filter(matchByAuthor(matchingAuthor))
+                .map(getShorthand)
+                .join('\n')}
+            </Code>
+          ))}
         </>
       )}
     </GridItem>
