@@ -10,7 +10,6 @@ import {
   Thead,
   Tr,
   Text,
-  Center,
   ButtonGroup,
   IconButton,
 } from '@chakra-ui/react'
@@ -66,10 +65,6 @@ export default function BooksPage() {
         <BooksFilters {...listControls} />
         <BooksSorting {...listControls} />
         <PageSize {...listControls} />
-        <HStack>
-          <Summary {...listControls} />
-          <Pages {...listControls} />
-        </HStack>
       </VStack>
       <Table
         size="sm"
@@ -135,19 +130,8 @@ export default function BooksPage() {
           ))}
         </Tbody>
       </Table>
-      {books?.length === 0 ? (
-        <Center p={2}>
-          <Text
-            textTransform="uppercase"
-            fontWeight="bold"
-            textColor="gray.300"
-          >
-            {T('No books found')}
-          </Text>
-        </Center>
-      ) : null}
 
-      <VStack paddingY={2}>
+      <VStack paddingY={2} background="white" position="sticky" bottom={0}>
         <HStack>
           <Summary {...listControls} />
           <Pages {...listControls} />
