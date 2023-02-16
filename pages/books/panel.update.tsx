@@ -31,7 +31,11 @@ import {
   bookUpdateInputStruct,
   bookUpdateInputValidStruct,
 } from 'domain/entity/Book'
-import { BookHints } from 'domain/entity/Book/Hints'
+import {
+  BookAuthorHints,
+  BookTitleHints,
+  BookSuggestedByHints,
+} from 'domain/entity/Book/Hints'
 import { bookVolumeStruct, canRemoveVolume } from 'domain/entity/BookVolume'
 import {
   BookVolumeCard,
@@ -149,7 +153,7 @@ export function BookPanelUpdate({
         </ButtonGroup>
       }
     >
-      <SimpleGrid columns={3} gridGap={2}>
+      <SimpleGrid minChildWidth={360} gridGap={2}>
         <Form id={formId} submit={saveAndClose}>
           <FormControl isInvalid={Boolean(formErrors.author)}>
             <FormLabel htmlFor="author">{T('Author')}</FormLabel>
@@ -170,6 +174,7 @@ export function BookPanelUpdate({
             {formErrors.author ? (
               <FormErrorMessage>{formErrors.author}</FormErrorMessage>
             ) : null}
+            <BookAuthorHints author={formValues.author} />
           </FormControl>
 
           <FormControl isRequired isInvalid={Boolean(formErrors.title)}>
@@ -190,6 +195,7 @@ export function BookPanelUpdate({
             {formErrors.title ? (
               <FormErrorMessage>{formErrors.title}</FormErrorMessage>
             ) : null}
+            <BookTitleHints title={formValues.title} bookId={initialValue.id} />
           </FormControl>
 
           <FormControl isInvalid={Boolean(formErrors.suggestedBy)}>
@@ -210,14 +216,8 @@ export function BookPanelUpdate({
             {formErrors.suggestedBy ? (
               <FormErrorMessage>{formErrors.suggestedBy}</FormErrorMessage>
             ) : null}
+            <BookSuggestedByHints suggestedBy={formValues.suggestedBy} />
           </FormControl>
-
-          <BookHints
-            author={formValues.author}
-            title={formValues.title}
-            suggestedBy={formValues.suggestedBy}
-            bookId={initialValue.id}
-          />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
             <FormLabel>{T('Volumes')}</FormLabel>

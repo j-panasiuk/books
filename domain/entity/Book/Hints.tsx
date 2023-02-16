@@ -15,17 +15,7 @@ type Props = {
   bookId?: Id
 }
 
-export function BookHints({ author, title, suggestedBy, bookId }: Props) {
-  return (
-    <>
-      <BookAuthorHints author={author} />
-      <BookTitleHints title={title} bookId={bookId} />
-      <BookSuggestedByHints suggestedBy={suggestedBy} />
-    </>
-  )
-}
-
-function BookAuthorHints({ author }: Pick<Props, 'author'>) {
+export function BookAuthorHints({ author }: Pick<Props, 'author'>) {
   const books = useBooks()
   const existingAuthors = useBooksAuthorPeople()
 
@@ -41,7 +31,7 @@ function BookAuthorHints({ author }: Pick<Props, 'author'>) {
       : []
 
   return (
-    <GridItem>
+    <GridItem mt={2}>
       {matchingAuthors.length > 0 && (
         <>
           <Code {...codeProps} background="green.100">
@@ -61,7 +51,10 @@ function BookAuthorHints({ author }: Pick<Props, 'author'>) {
   )
 }
 
-function BookTitleHints({ title, bookId }: Pick<Props, 'title' | 'bookId'>) {
+export function BookTitleHints({
+  title,
+  bookId,
+}: Pick<Props, 'title' | 'bookId'>) {
   const existingBooks = useBooks()
 
   const matchingTitleBooks = existingBooks.filter((exs) =>
@@ -74,7 +67,7 @@ function BookTitleHints({ title, bookId }: Pick<Props, 'title' | 'bookId'>) {
       : matchingTitleBooks.length > 1
 
   return (
-    <GridItem>
+    <GridItem mt={2}>
       {matchingTitleBooks.length > 0 && (
         <Code
           {...codeProps}
@@ -89,7 +82,9 @@ function BookTitleHints({ title, bookId }: Pick<Props, 'title' | 'bookId'>) {
   )
 }
 
-function BookSuggestedByHints({ suggestedBy }: Pick<Props, 'suggestedBy'>) {
+export function BookSuggestedByHints({
+  suggestedBy,
+}: Pick<Props, 'suggestedBy'>) {
   const existingSuggesters = useBooksSuggestedByPeople()
 
   const suggestedByPeople = splitNames(suggestedBy)
@@ -98,7 +93,7 @@ function BookSuggestedByHints({ suggestedBy }: Pick<Props, 'suggestedBy'>) {
   )
 
   return (
-    <GridItem>
+    <GridItem mt={2}>
       {matchingSuggestPeople.length > 0 && (
         <Code {...codeProps} background="green.100">
           {matchingSuggestPeople.join('\n')}

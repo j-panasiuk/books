@@ -31,7 +31,11 @@ import {
   bookCreateInputValidStruct,
 } from 'domain/entity/Book'
 import { fetchBook } from 'domain/entity/Book/api'
-import { BookHints } from 'domain/entity/Book/Hints'
+import {
+  BookAuthorHints,
+  BookTitleHints,
+  BookSuggestedByHints,
+} from 'domain/entity/Book/Hints'
 import {
   BookVolumeCard,
   BookVolumeCardAdd,
@@ -123,7 +127,7 @@ export function BookPanelCreate({
         </ButtonGroup>
       }
     >
-      <SimpleGrid columns={3} gridGap={2}>
+      <SimpleGrid minChildWidth={360} gridGap={2}>
         <Form id={formId} submit={saveAndClose}>
           <FormControl isInvalid={Boolean(formErrors.author)}>
             <FormLabel htmlFor="author">{T('Author')}</FormLabel>
@@ -144,6 +148,7 @@ export function BookPanelCreate({
             {formErrors.author ? (
               <FormErrorMessage>{formErrors.author}</FormErrorMessage>
             ) : null}
+            <BookAuthorHints author={formValues.author} />
           </FormControl>
 
           <FormControl isRequired isInvalid={Boolean(formErrors.title)}>
@@ -164,6 +169,7 @@ export function BookPanelCreate({
             {formErrors.title ? (
               <FormErrorMessage>{formErrors.title}</FormErrorMessage>
             ) : null}
+            <BookTitleHints title={formValues.title} />
           </FormControl>
 
           <FormControl>
@@ -181,13 +187,11 @@ export function BookPanelCreate({
                 }
               }}
             />
+            {formErrors.suggestedBy ? (
+              <FormErrorMessage>{formErrors.suggestedBy}</FormErrorMessage>
+            ) : null}
+            <BookSuggestedByHints suggestedBy={formValues.suggestedBy} />
           </FormControl>
-
-          <BookHints
-            author={formValues.author}
-            title={formValues.title}
-            suggestedBy={formValues.suggestedBy}
-          />
 
           <GridItem colStart={1} colEnd={-1} mt={2} mb={-2}>
             <FormLabel>{T('Volumes')}</FormLabel>
