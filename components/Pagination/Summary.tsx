@@ -26,7 +26,7 @@ export function Summary({ itemsMatching, itemsTotal, pagination }: Props) {
       {itemsMatching > 0 ? (
         <>
           <Text fontSize="sm">
-            Showing {firstItem} - {lastItem} of
+            {T(`Showing ${firstItem} - ${lastItem} of`)}
           </Text>
           <Text fontSize="sm" fontWeight="bold" mx={1}>
             {itemsMatching}
