@@ -207,11 +207,7 @@ function BookSellerStock({ seller, volumes }: BookSellerStockProps) {
       .map((s) => s.stock)
   )
 
-  let stock: Stock | undefined
-
-  for (const s of stocksByPriority) {
-    if (volumeStocks.has(s)) stock = s
-  }
+  const stock = getBookStock(volumeStocks)
 
   return (
     <SellerStockIcon
@@ -220,6 +216,20 @@ function BookSellerStock({ seller, volumes }: BookSellerStockProps) {
       stock={stock}
     />
   )
+}
+
+/**
+ * Collect stocks of each book volume.
+ * Return the one that's the most relevant/urgent to the user.
+ */
+function getBookStock(volumeStocks: Set<Stock>): Stock | undefined {
+  let stock: Stock | undefined
+
+  for (const s of stocksByPriority) {
+    if (volumeStocks.has(s)) stock = s
+  }
+
+  return stock
 }
 
 /**

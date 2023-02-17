@@ -42,7 +42,7 @@ function Header({ nav, actions }: HeaderProps) {
       w="100%"
       h="100%"
       pr={2}
-      bg="twitter.800"
+      bg="linkedin.700"
       alignItems="center"
       justifyContent="space-between"
     >

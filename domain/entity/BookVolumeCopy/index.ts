@@ -5,10 +5,17 @@ import { type Ownership, ownershipStruct } from 'domain/attribute/ownership'
 
 export type BookVolumeCopy = s.Infer<typeof bookVolumeCopyStruct>
 
-export const bookVolumeCopyStruct = s.object({
-  ownership: ownershipStruct,
-  from: nameStruct,
-  to: nameStruct,
-}) satisfies s.Describe<
+export const bookVolumeCopyStruct = s.coerce(
+  s.object({
+    ownership: s.defaulted(ownershipStruct, 'owned'),
+    from: nameStruct,
+    to: nameStruct,
+  }),
+  s.unknown(),
+  function coerce(val) {
+    if (!val) return {}
+    return val
+  }
+) satisfies s.Describe<
   Pick<DB.BookVolumeCopy, 'from' | 'to'> & { ownership: Ownership }
 >

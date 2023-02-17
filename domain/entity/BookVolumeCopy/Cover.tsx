@@ -29,22 +29,27 @@ export function BookVolumeCopyCover({ copy, title, ...props }: Props) {
 
 function getCoverColors(
   copy: BookVolumeCopy
-): [backdrop: ColorProps['color'], stripes?: ColorProps['color']] {
+): Partial<{ backdrop: ColorProps['color']; stripes: ColorProps['color'] }> {
   switch (copy.ownership) {
     case 'borrowed': {
-      return ['orange.300']
+      return { backdrop: 'orange.300' }
     }
     case 'gifted': {
-      return ['purple.300']
+      return { backdrop: 'purple.300' }
+    }
+    case 'ordered': {
+      return { backdrop: 'gray.300' }
     }
     case 'owned': {
-      return copy.to ? ['gray.500', 'purple.300'] : ['gray.500']
+      return copy.to
+        ? { backdrop: 'gray.500', stripes: 'purple.300' }
+        : { backdrop: 'gray.500' }
     }
   }
 }
 
 function getBackground(copy: BookVolumeCopy): BackgroundProps['background'] {
-  const [backdrop, stripes] = getCoverColors(copy)
+  const { backdrop, stripes } = getCoverColors(copy)
 
   if (stripes) {
     return `repeating-linear-gradient(
