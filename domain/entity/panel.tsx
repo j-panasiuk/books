@@ -1,4 +1,10 @@
-import { Drawer, DrawerContent, DrawerOverlay } from '@chakra-ui/react'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerOverlay,
+  type DrawerProps,
+  useBreakpoint,
+} from '@chakra-ui/react'
 import type { ComponentType } from 'react'
 import type { Panel, PanelControls } from 'utils/interaction/panel'
 import type * as Api from './api'
@@ -31,11 +37,18 @@ export function EntityPanel<T extends Entity>({
   remove,
   ...panel
 }: EntityPanelProps<T>) {
+  const breakpoint = useBreakpoint()
+
+  const drawerProps: Pick<DrawerProps, 'placement' | 'size'> =
+    breakpoint === '2xl'
+      ? { placement: 'right', size: 'xl' }
+      : { placement: 'top', size: undefined }
+
   const { opened, ...panelControls } = panel
 
   return (
     <Drawer
-      placement="top"
+      {...drawerProps}
       isOpen={Boolean(opened)}
       onClose={panelControls.closePanel}
     >
