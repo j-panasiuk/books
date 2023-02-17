@@ -208,16 +208,35 @@ function BookSellerStock({ seller, volumes }: BookSellerStockProps) {
   )
 
   let stock: Stock | undefined
-  if (volumeStocks.has('none')) stock = 'none'
-  if (volumeStocks.has('out_of_stock')) stock = 'out_of_stock'
-  if (volumeStocks.has('available')) stock = 'available'
+
+  for (const s of stocksByPriority) {
+    if (volumeStocks.has(s)) stock = s
+  }
 
   return (
     <SellerStockIcon
       sellerName={seller.name}
       sellerIcon={seller.icon}
       stock={stock}
-      borderStyle={volumeStocks.size > 1 ? 'dashed' : 'inherit'}
     />
   )
 }
+
+/**
+ * Display priority of possible stock values.
+ *
+ * Usually a stock value (`none`, `out_of_stock` etc) refers to 1 specifc book volume.
+ * Here we use it a bit differently: we try to collect the statuses of *all book volumes*
+ * into one value that's displayed to the user. Because of this we have to decide how to
+ * present book with multiple volume/statuses (vol.1 is available, but vol.2 is not, etc)
+ *
+ * This list defines priorities of stock values, from lowest to highest
+ */
+const stocksByPriority: Stock[] = [
+  'none',
+  'out_of_stock',
+  'out_of_stock:notify_me',
+  'available:cannot_deliver',
+  'available',
+  'available:last_chance',
+]

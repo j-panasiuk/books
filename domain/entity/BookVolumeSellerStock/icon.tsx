@@ -1,5 +1,5 @@
-import { type BoxProps, Box, Img } from '@chakra-ui/react'
-import { type Stock, canBuy } from 'domain/attribute/stock'
+import { type BoxProps, Box, Img, type ImgProps } from '@chakra-ui/react'
+import { type Stock } from 'domain/attribute/stock'
 
 interface Props extends BoxProps {
   sellerName: string
@@ -14,36 +14,69 @@ export function SellerStockIcon({
   ...props
 }: Props) {
   if (!stock) {
-    return (
-      <Box
-        key={sellerName}
-        {...defaultProps}
-        borderColor="gray.100"
-        {...props}
-      />
-    )
+    return <Box key={sellerName} {...defaultBoxProps} {...props} />
   }
 
-  const isAvailable = canBuy(stock)
+  const { box, img } = getThemeProps(stock)
+
   return (
-    <Img
-      key={sellerName}
-      src={sellerIcon}
-      alt={sellerName}
-      {...defaultProps}
-      padding={1}
-      borderColor="gray.500"
-      opacity={isAvailable ? undefined : 0.25}
-      filter={isAvailable ? undefined : 'grayscale(1)'}
-      {...props}
-    />
+    <Box key={sellerName} padding={1} {...defaultBoxProps} {...box} {...props}>
+      <Img src={sellerIcon} alt={sellerName} {...img} />
+    </Box>
   )
 }
 
-const defaultProps: BoxProps = {
+const defaultBoxProps: BoxProps = {
   width: 7,
   height: 7,
   borderWidth: 1,
   borderStyle: 'solid',
+  borderColor: 'gray.100',
   borderRadius: 2,
+}
+
+const dashed: BoxProps = { borderStyle: 'dashed' }
+const green: BoxProps = { borderColor: 'green.300' }
+const red: BoxProps = { borderColor: 'red.300' }
+
+const desaturated: ImgProps = { filter: 'grayscale(1)' }
+const transparent: ImgProps = { opacity: 0.2 }
+
+function getThemeProps(
+  stock: Stock
+): Partial<{ box: BoxProps; img: ImgProps }> {
+  switch (stock) {
+    case 'available': {
+      return {
+        box: { ...green },
+      }
+    }
+    case 'available:last_chance': {
+      return {
+        box: { ...green, ...dashed },
+      }
+    }
+    case 'available:cannot_deliver': {
+      return {
+        box: { ...red, ...dashed },
+      }
+    }
+    case 'out_of_stock': {
+      return {
+        box: { ...red, ...dashed },
+        img: { ...desaturated, ...transparent },
+      }
+    }
+    case 'out_of_stock:notify_me': {
+      return {
+        box: { ...green, ...dashed },
+        img: { ...desaturated, ...transparent },
+      }
+    }
+    case 'none': {
+      return {
+        img: { ...desaturated, ...transparent },
+      }
+    }
+  }
 }
