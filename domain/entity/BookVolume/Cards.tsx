@@ -109,7 +109,7 @@ export function BookVolumeCard({
             <GridItem display="flex" flexDirection="row">
               <Select
                 id={key}
-                options={stockOptions}
+                options={[undefined, ...stockOptions]}
                 value={stock}
                 onSelect={(stock) => {
                   updateVolume({
