@@ -19,3 +19,11 @@ export const bookVolumeCopyStruct = s.coerce(
 ) satisfies s.Describe<
   Pick<DB.BookVolumeCopy, 'from' | 'to'> & { ownership: Ownership }
 >
+
+// --- SELECT ---
+
+export const bookVolumeCopySelect = {
+  ownership: true,
+  from: true,
+  to: true,
+} satisfies DB.Prisma.BookVolumeCopySelect

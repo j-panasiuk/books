@@ -3,10 +3,12 @@ import * as s from 'superstruct'
 import { nameStruct } from 'domain/attribute/name'
 import { positiveCountStruct } from 'domain/attribute/count'
 import {
+  bookVolumeCopySelect,
   bookVolumeCopyStruct,
   type BookVolumeCopy,
 } from 'domain/entity/BookVolumeCopy'
 import {
+  bookVolumeSellerStockSelect,
   bookVolumeSellerStockStruct,
   type BookVolumeSellerStock,
 } from 'domain/entity/BookVolumeSellerStock'
@@ -47,6 +49,12 @@ export const bookVolumesStruct = s.coerce(
   }
 )
 
+export const bookVolumeSelect = {
+  no: true,
+  title: true,
+  copies: { select: bookVolumeCopySelect },
+  sellers: { select: bookVolumeSellerStockSelect },
+} satisfies DB.Prisma.BookVolumeSelect
 export function canRemoveVolume(
   volume: Pick<BookVolume, 'no'>,
   volumes: Pick<BookVolume, 'no'>[]

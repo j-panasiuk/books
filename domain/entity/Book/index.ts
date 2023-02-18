@@ -7,7 +7,11 @@ import {
   splitNames,
 } from 'domain/attribute/name'
 import { type Serialized, type Base, entityStruct } from 'domain/entity'
-import { type BookVolume, bookVolumesStruct } from 'domain/entity/BookVolume'
+import {
+  type BookVolume,
+  bookVolumesStruct,
+  bookVolumeSelect,
+} from 'domain/entity/BookVolume'
 import { type Matches } from 'utils/matches'
 import { pick } from 'utils/pick'
 
@@ -40,26 +44,10 @@ export const bookItemStruct = s.assign(
   })
 ) satisfies s.Describe<Serialized<DB.Book> & { volumes: BookVolume[] }>
 
+// --- SELECT ---
+
 export const bookItemInclude: DB.Prisma.BookInclude = {
-  volumes: {
-    select: {
-      no: true,
-      title: true,
-      copies: {
-        select: {
-          ownership: true,
-          from: true,
-          to: true,
-        },
-      },
-      sellers: {
-        select: {
-          sellerName: true,
-          stock: true,
-        },
-      },
-    },
-  },
+  volumes: { select: bookVolumeSelect },
 }
 
 // --- CREATE & UPDATE ---
